@@ -20,8 +20,21 @@ public abstract class BaseComponent {
   @Autowired
   protected TestRestTemplate restTemplate;
 
+  /**
+   * Asserts that the response status on the response is equal to the httpStatus provided.
+   * @param responseEntity The response of the request.
+   * @param status The status expected.
+   */
   protected void assertStatus(ResponseEntity responseEntity, HttpStatus status) {
     assertThat(responseEntity.getStatusCode())
         .isEqualTo(status);
+  }
+
+  /**
+   * Returns the ams base path.
+   * @return The ams path.
+   */
+  protected String getAmsPath() {
+    return "/ams";
   }
 }

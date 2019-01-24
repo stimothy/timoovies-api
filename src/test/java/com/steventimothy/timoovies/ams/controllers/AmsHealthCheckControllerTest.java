@@ -1,4 +1,4 @@
-package com.steventimothy.timoovies.controllers;
+package com.steventimothy.timoovies.ams.controllers;
 
 import com.steventimothy.timoovies.BaseComponent;
 import org.junit.Test;
@@ -9,14 +9,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class HealthCheckControllerTest extends BaseComponent {
+public class AmsHealthCheckControllerTest extends BaseComponent {
 
   /**
-   * This tests the health endpoint.
+   * This tests the ams health endpoint.
    */
   @Test
-  public void testHealth() {
-    ResponseEntity<String> responseEntity = this.restTemplate.exchange(RequestEntity.get(UriComponentsBuilder.fromUriString("/health")
+  public void testAmsHealth() {
+    ResponseEntity<String> responseEntity = this.restTemplate.exchange(RequestEntity.get(UriComponentsBuilder.fromUriString(getAmsPath() + "/health")
         .build().toUri())
         .build(), String.class);
 
