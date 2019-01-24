@@ -2,7 +2,9 @@ package com.steventimothy.timoovies.controllers;
 
 import com.steventimothy.timoovies.BaseComponent;
 import org.junit.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,12 +16,12 @@ public class HealthCheckControllerTest extends BaseComponent {
    */
   @Test
   public void testUPSHealth() {
-    String string = this.restTemplate.exchange(RequestEntity.get(UriComponentsBuilder.fromUriString("/health")
+    ResponseEntity<String> responseEntity = this.restTemplate.exchange(RequestEntity.get(UriComponentsBuilder.fromUriString("/health")
         .build().toUri())
-        .build(), String.class)
-        .getBody();
+        .build(), String.class);
 
-    assertThat(string)
+    assertStatus(responseEntity, HttpStatus.OK);
+    assertThat(responseEntity.getBody())
         .isEqualTo("Ok");
   }
 }
