@@ -18,10 +18,12 @@ public class AmsHealthCheckController {
 
   /**
    * The health check endpoint.
+   *
    * @return Ok if the endpoint is reached.
    */
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity getAmsHealth() {
+    log.info("GET: /ams/health");
     return ResponseEntity.ok("Ok");
   }
 }

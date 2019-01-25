@@ -36,6 +36,7 @@
 
     <!--Source Versions-->
     <lombok.version>1.18.4</lombok.version>
+    <mysql-connector.version>8.0.14</mysql-connector.version>
     <spring-boot.version>2.1.1.RELEASE</spring-boot.version>
     <spring-boot-actuator.version>2.1.2.RELEASE</spring-boot-actuator.version>
 
@@ -55,6 +56,13 @@
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok</artifactId>
         <version>${lombok.version}</version>
+      </dependency>
+
+      <!--MySql Connector-->
+      <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>${mysql-connector.version}</version>
       </dependency>
 
       <!--Spring Boot Actuator-->
@@ -125,6 +133,12 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
+    </dependency>
+
+    <!--MySql Connector-->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
     </dependency>
 
     <!--Spring Boot-->

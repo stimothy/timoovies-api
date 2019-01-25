@@ -18,6 +18,7 @@ public class HealthCheckController {
 
   /**
    * The health check endpoint.
+   *
    * @return Ok if the endpoint is reached.
    */
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

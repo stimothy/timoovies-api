@@ -1,5 +1,6 @@
 package com.steventimothy.timoovies.config;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,7 @@ public class ApplicationConfig {
 
   /**
    * This method returns the bean restTemplate.
+   *
    * @param restTemplateBuilder The builder to build a restTemplate.
    * @return The restTemplate bean.
    */
@@ -28,5 +30,15 @@ public class ApplicationConfig {
     return restTemplateBuilder
         .requestFactory(() -> new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
         .build();
+  }
+
+  /**
+   * This method returns a bean of the mysqlDataSource object.
+   *
+   * @return The mysqlDataSource bean.
+   */
+  @Bean
+  public MysqlDataSource mysqlDataSource() {
+    return new MysqlDataSource();
   }
 }
