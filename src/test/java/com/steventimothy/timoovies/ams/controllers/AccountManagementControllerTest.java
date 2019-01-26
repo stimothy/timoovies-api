@@ -33,6 +33,30 @@ public class AccountManagementControllerTest extends BaseComponent {
   }
 
   /**
+   * This tests that a user can be created even with duplicate passwords.
+   */
+  @Test
+  public void testCreateUser_DuplicatePasswords() {
+    //Create the users.
+    Integer userId = getOrCreateUserId();
+    User user = getUser(userId);
+    User user2 = new User()
+        .id(3)
+        .username("bob1234")
+        .password(user.password());
+    Integer userId2 = createUser(user2);
+
+    //Get the created user.
+    User user3 = getUser(userId2);
+
+    assertThat(user2)
+        .isEqualTo(user3);
+
+    //Clean up.
+    deleteUser(userId2);
+  }
+
+  /**
    * Tests that a user can be created with an id of zero.
    */
   @Test
@@ -115,6 +139,42 @@ public class AccountManagementControllerTest extends BaseComponent {
   }
 
   /**
+   * Tests that a user cannot be created with identical ids.
+   */
+  @Test
+  public void testCreateUser_IdenticalIds() {
+    //Create the users.
+    Integer userId = getOrCreateUserId();
+    User user = new User()
+        .id(userId)
+        .username("bob1234")
+        .password("myPassword");
+    ResponseEntity<Integer> responseEntity = requestCreateUser(user);
+
+    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Tests that a user cannot be created with identical usernames.
+   */
+  @Test
+  public void testCreateUser_IdenticalUsernames() {
+    //Create the users.
+    Integer userId = getOrCreateUserId();
+    User user = getUser(userId);
+    User user2 = new User()
+        .id(3)
+        .username(user.username())
+        .password("myPassword");
+    ResponseEntity<Integer> responseEntity = requestCreateUser(user);
+
+    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+
+    //Clean up.
+    requestDeleteUserById(user2.id());
+  }
+
+  /**
    * Tests that a user can be gotten by username.
    */
   @Test
@@ -159,7 +219,7 @@ public class AccountManagementControllerTest extends BaseComponent {
    */
   @Test
   public void testDeleteUser_ById() {
-    //Create an delete the user.
+    //Create and delete the user.
     Integer userId = getOrCreateUserId();
     deleteUser(userId);
 
@@ -178,6 +238,24 @@ public class AccountManagementControllerTest extends BaseComponent {
     deleteUser(user.username());
 
     ResponseEntity<User> responseEntity = requestGetUserById(userId);
+    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Tests that a user cannot be deleted if id is null.
+   */
+  @Test
+  public void testDeleteUser_ById_NullId() {
+    ResponseEntity responseEntity = requestDeleteUserById(null);
+    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Tests that a user is deleted from the database by username.
+   */
+  @Test
+  public void testDeleteUser_ByUsername_NullUsername() {
+    ResponseEntity responseEntity = requestDeleteUserByUsername(null);
     assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
   }
 }
