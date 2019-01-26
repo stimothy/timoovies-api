@@ -45,4 +45,48 @@ public class AccountManagementService {
       return null;
     }
   }
+
+  public User getUser(Integer id) {
+    if (id != null) {
+      log.info("Attempting to retrieve the user by id: {}", id);
+      return usersDataService.getUser(id);
+    }
+    else {
+      log.info("The id cannot be null.");
+      return null;
+    }
+  }
+
+  public User getUser(String username) {
+    if (username != null) {
+      log.info("Attempting to retrieve the user by username: {}", username);
+      return usersDataService.getUser(username);
+    }
+    else {
+      log.info("The username cannot be null.");
+      return null;
+    }
+  }
+
+  public Boolean deleteUser(Integer id) {
+    if (id != null) {
+      log.info("Attempting to delete the user by id: {}", id);
+      return usersDataService.deleteUser(id);
+    }
+    else {
+      log.info("The id cannot be null.");
+      return false;
+    }
+  }
+
+  public Boolean deleteUser(String username) {
+    if (username != null) {
+      log.info("Attempting to delete the user by username: {}", username);
+      return usersDataService.deleteUser(username);
+    }
+    else {
+      log.info("The username cannot be null.");
+      return false;
+    }
+  }
 }

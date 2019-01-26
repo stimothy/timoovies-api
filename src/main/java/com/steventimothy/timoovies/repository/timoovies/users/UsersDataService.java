@@ -46,4 +46,56 @@ public class UsersDataService {
       return id;
     }
   }
+
+  public User getUser(Integer id) {
+    DataUser dataUser = usersDbService.getById(id);
+
+    if (dataUser == null) {
+      log.warn("The user did not exist in the database with id: {}", id);
+      return null;
+    }
+    else {
+      log.info("The user retrieved: {}", dataUser);
+      return userMapper.map(dataUser);
+    }
+  }
+
+  public User getUser(String username) {
+    DataUser dataUser = usersDbService.getByUsername(username);
+
+    if (dataUser == null) {
+      log.warn("The user did not exist in the database with username: {}", username);
+      return null;
+    }
+    else {
+      log.info("The user retrieved: {}", dataUser);
+      return userMapper.map(dataUser);
+    }
+  }
+
+  public Boolean deleteUser(Integer id) {
+    Boolean success = usersDbService.deleteById(id);
+
+    if (!success) {
+      log.warn("The user could not be deleted with id: {}", id);
+      return success;
+    }
+    else {
+      log.info("The user was deleted");
+      return success;
+    }
+  }
+
+  public Boolean deleteUser(String username) {
+    Boolean success = usersDbService.deleteByUsername(username);
+
+    if (!success) {
+      log.warn("The user could not be deleted with username: {}", username);
+      return success;
+    }
+    else {
+      log.info("The user was deleted");
+      return success;
+    }
+  }
 }

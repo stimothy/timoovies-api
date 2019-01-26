@@ -32,7 +32,7 @@ class UsersDbService extends TimooviesDbService {
    * @param dataUser the user to insert.
    * @return The id of the user after inserting.
    */
-  public Integer insert(DataUser dataUser) {
+  Integer insert(DataUser dataUser) {
     //Do some initial setup and update the timestamps.
     Integer id = null;
     dataUser.date_created(Instant.now());
@@ -53,17 +53,7 @@ class UsersDbService extends TimooviesDbService {
       //Execute the statement
       preparedStatement.executeUpdate();
 
-      //Get the id back for the inserted user.
-      preparedStatement = connection.prepareStatement("SELECT u.id FROM users u WHERE u.username = ?");
-      preparedStatement.setString(1, dataUser.username());
-
-      //Execute the statement
-      ResultSet resultSet = preparedStatement.executeQuery();
-
-      //Get the id.
-      if (resultSet.next()) {
-        id = resultSet.getInt("id");
-      }
+      id = getByUsername(dataUser.username(), connection).id();
     }
     catch (SQLException ex) {
       log.error("Could not insert dataUser into the database.", ex);
@@ -73,6 +63,143 @@ class UsersDbService extends TimooviesDbService {
     closeConnection(connection);
 
     return id;
+  }
+
+  /**
+   * Get a dataUser by id.
+   * @param id The id of the user to retrieve.
+   * @return The dataUser retrieved by id, or null if it could not be found.
+   */
+  DataUser getById(Integer id) {
+    DataUser dataUser = null;
+
+    //Open a connection with the database.
+    Connection connection = openConnection();
+
+    try {
+      //Get the dataUser with the id.
+      PreparedStatement preparedStatement = connection.prepareStatement("SELECT u.* FROM users u WHERE u.id = ?");
+      preparedStatement.setInt(1, id);
+
+      //Execute the statement
+      ResultSet resultSet = preparedStatement.executeQuery();
+
+      dataUser = getDataUserFromResultSet(resultSet);
+    }
+    catch (SQLException ex) {
+      log.error("The user could not be retrieved from the database by id.", ex);
+    }
+
+    //Close the connection.
+    closeConnection(connection);
+
+    return dataUser;
+  }
+
+  /**
+   * Get dataUser by username.
+   * @param username the username of the user to retrieve.
+   * @return The dataUser retrieved or null if it didn't exist.
+   */
+  DataUser getByUsername(String username) {
+    DataUser dataUser = null;
+
+    //Open a connection with the database.
+    Connection connection = openConnection();
+
+    try {
+      dataUser = getByUsername(username, connection);
+    }
+    catch (SQLException ex) {
+      log.error("The user could not be retrieved from the database by username.", ex);
+    }
+
+    //Close the connection.
+    closeConnection(connection);
+
+    return dataUser;
+  }
+
+  Boolean deleteById(Integer id) {
+    int affectedRows = 0;
+
+    Connection connection = openConnection();
+
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM users WHERE id = ?");
+      preparedStatement.setInt(1, id);
+
+      affectedRows = preparedStatement.executeUpdate();
+    }
+    catch (SQLException ex) {
+      log.error("The user could not be deleted from the database by id.", ex);
+    }
+
+    closeConnection(connection);
+
+    return (affectedRows > 0);
+  }
+
+  Boolean deleteByUsername(String username) {
+    int affectedRows = 0;
+
+    Connection connection = openConnection();
+
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM users WHERE username = ?");
+      preparedStatement.setString(1, username);
+
+      affectedRows = preparedStatement.executeUpdate();
+    }
+    catch (SQLException ex) {
+      log.error("The user could not be deleted from the database by username.", ex);
+    }
+
+    closeConnection(connection);
+
+    return (affectedRows > 0);
+  }
+
+  /**
+   * Gets a dataUser by username helper method.
+   * @param username the username of the user to retrieve.
+   * @param connection The connection to the database.
+   * @return The dataUser retrieved from the database or null if it couldn't.
+   * @throws SQLException Throws if there was an sql exception on retrieving the data.
+   */
+  private DataUser getByUsername(String username, Connection connection) throws SQLException {
+    DataUser dataUser = null;
+
+    //Get the user with the id.
+    PreparedStatement preparedStatement = connection.prepareStatement("SELECT u.* FROM users u WHERE u.username = ?");
+    preparedStatement.setString(1, username);
+
+    //Execute the statement
+    ResultSet resultSet = preparedStatement.executeQuery();
+
+    return getDataUserFromResultSet(resultSet);
+  }
+
+  /**
+   * Get a dataUser from a ResultSet.
+   * @param resultSet the resultSet to get the dataUser from.
+   * @return The dataUser from the resultSet, null if it doesn't exist.
+   * @throws SQLException Throws if there was a sql exception involved.
+   */
+  private DataUser getDataUserFromResultSet(ResultSet resultSet) throws SQLException {
+    DataUser dataUser = null;
+
+    //Get the dataUser.
+    if (resultSet.next()) {
+      dataUser = new DataUser()
+          .id(resultSet.getInt("id"))
+          .username(resultSet.getString("username"))
+          .enc_password(resultSet.getString("enc_password"))
+          .date_created(resultSet.getTimestamp("date_created").toInstant())
+          .last_modified(resultSet.getTimestamp("last_modified").toInstant());
+    }
+
+    return dataUser;
   }
 
   /**
