@@ -215,6 +215,71 @@ public class AccountManagementControllerTest extends BaseComponent {
   }
 
   /**
+   * Tests that a user can be updated.
+   */
+  @Test
+  public void testUpdateUser() {
+    Integer userId = getOrCreateUserId();
+    User user = new User()
+        .id(userId)
+        .username("bob1234")
+        .password("myPassword");
+
+    updateUser(user);
+
+    User user2 = getUser(userId);
+
+    assertThat(user)
+        .isEqualTo(user2);
+  }
+
+  /**
+   * Tests that a user cannot be updated if the username is null.
+   */
+  @Test
+  public void testUpdateUser_NullUsername() {
+    Integer userId = getOrCreateUserId();
+    User user = new User()
+        .id(userId)
+        .password("myPassword");
+
+    ResponseEntity responseEntity = requestUpdateUser(user);
+    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Tests that the user cannot be updated if the password was null.
+   */
+  @Test
+  public void testUpdateUser_NullPassword() {
+    Integer userId = getOrCreateUserId();
+    User user = new User()
+        .id(userId)
+        .username("bob1234");
+
+    ResponseEntity responseEntity = requestUpdateUser(user);
+    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Tests that a user cannot be updated if the id doesn't exist.
+   */
+  @Test
+  public void testUpdateUser_DifferentIds() {
+    getOrCreateUserId();
+    User user = new User()
+        .id(3)
+        .username("bob1234")
+        .password("myPassword");
+
+    ResponseEntity responseEntity = requestUpdateUser(user);
+    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+
+    //Clean up.
+    requestDeleteUserById(user.id());
+  }
+
+  /**
    * Tests that a user is deleted from the database by id.
    */
   @Test

@@ -52,6 +52,7 @@ public abstract class BaseComponent {
 
   /**
    * Gets the existing id of test user 1, or creates a user and returns that id.
+   *
    * @return the id of the test user 1.
    */
   protected Integer getOrCreateUserId() {
@@ -68,6 +69,7 @@ public abstract class BaseComponent {
 
   /**
    * Gets the existing id of test user 2, or creates a user and returns that id.
+   *
    * @return the id of the test user 2.
    */
   protected Integer getOrCreateAltUserId() {
@@ -84,6 +86,7 @@ public abstract class BaseComponent {
 
   /**
    * Creates a user in the database and returns its id.
+   *
    * @param user The user to create in the database.
    * @return The id of the user created.
    */
@@ -96,6 +99,7 @@ public abstract class BaseComponent {
 
   /**
    * Creates a user in the database.
+   *
    * @param user The user to create in the database.
    * @return The response from the rest call to create a user.
    */
@@ -109,6 +113,7 @@ public abstract class BaseComponent {
 
   /**
    * Gets the user based on an id.
+   *
    * @param id The id of the user to get.
    * @return The user retrieved from the database.
    */
@@ -121,6 +126,7 @@ public abstract class BaseComponent {
 
   /**
    * Gets the user based on a username.
+   *
    * @param username The username of the user to get.
    * @return The user retrieved from the database.
    */
@@ -133,6 +139,7 @@ public abstract class BaseComponent {
 
   /**
    * Gets the user based on an id.
+   *
    * @param id The id of the user to get.
    * @return The response of the rest call to get a user by id.
    */
@@ -145,6 +152,7 @@ public abstract class BaseComponent {
 
   /**
    * Gets the user based on a username.
+   *
    * @param username The username of the user to get.
    * @return The response of the rest call to get a user by username.
    */
@@ -156,7 +164,32 @@ public abstract class BaseComponent {
   }
 
   /**
+   * Updates the user in the database.
+   *
+   * @param user The updated user.
+   */
+  protected void updateUser(User user) {
+    ResponseEntity responseEntity = requestUpdateUser(user);
+    assertStatus(responseEntity, HttpStatus.OK);
+  }
+
+  /**
+   * Updates the user in the database.
+   *
+   * @param user The updated user.
+   * @return The response of the rest call.
+   */
+  protected ResponseEntity requestUpdateUser(User user) {
+    return this.restTemplate.exchange(RequestEntity.put(UriComponentsBuilder.fromUriString(getAmsPath())
+        .build().toUri())
+        .accept(MediaType.APPLICATION_JSON)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(user), String.class);
+  }
+
+  /**
    * Deletes a user by id.
+   *
    * @param id The id of the user to delete.
    */
   protected void deleteUser(Integer id) {
@@ -166,6 +199,7 @@ public abstract class BaseComponent {
 
   /**
    * Deletes a user by username.
+   *
    * @param username The username of the user to delete.
    */
   protected void deleteUser(String username) {
@@ -175,6 +209,7 @@ public abstract class BaseComponent {
 
   /**
    * Deletes a user by id.
+   *
    * @param id The id of the user to delete.
    * @return The response of the rest call to delete a user by id.
    */
@@ -187,6 +222,7 @@ public abstract class BaseComponent {
 
   /**
    * Deletes a user by username.
+   *
    * @param username The username of the user to delete.
    * @return The response of the rest call to delete a user by username.
    */
@@ -207,13 +243,15 @@ public abstract class BaseComponent {
       requestDeleteUserById(1);
       requestDeleteUserById(2);
     }
-    catch (Exception ex) {}
+    catch (Exception ex) {
+    }
   }
 
   /**
    * Asserts that the response status on the response is equal to the httpStatus provided.
+   *
    * @param responseEntity The response of the request.
-   * @param status The status expected.
+   * @param status         The status expected.
    */
   protected void assertStatus(ResponseEntity responseEntity, HttpStatus status) {
     assertThat(responseEntity.getStatusCode())
@@ -222,6 +260,7 @@ public abstract class BaseComponent {
 
   /**
    * Returns the ams base path.
+   *
    * @return The ams path.
    */
   protected String getAmsPath() {

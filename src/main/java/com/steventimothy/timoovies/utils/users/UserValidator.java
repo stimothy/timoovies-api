@@ -31,6 +31,24 @@ public class UserValidator {
   }
 
   /**
+   * Validates a user being updated.
+   *
+   * @param user The updated user.
+   * @return True if all fields are valid.
+   */
+  public boolean validateUpdateUser(User user) {
+    if (user != null && validUpdateUserData(user)) {
+      return true;
+    }
+    else {
+      if (user == null) {
+        log.warn("Couldn't validate a null user.");
+      }
+      return false;
+    }
+  }
+
+  /**
    * Validates that the users data is correct.
    *
    * @param user the user to validate.
@@ -38,6 +56,16 @@ public class UserValidator {
    */
   private boolean validUserData(User user) {
     return (validId(user.id()) && validUsernamePassword(user.username(), user.password()));
+  }
+
+  /**
+   * Validates that the users data if correct.
+   *
+   * @param user The updated user.
+   * @return True if the user has valid data, false otherwise.
+   */
+  private boolean validUpdateUserData(User user) {
+    return validUpdateId(user.id()) && validUsernamePassword(user.username(), user.password());
   }
 
   /**
@@ -53,6 +81,22 @@ public class UserValidator {
     }
     else {
       log.warn("The user id cannot contain any value unless it is between 1 and 10");
+      return false;
+    }
+  }
+
+  /**
+   * Validates that the user cannot have a null id.
+   *
+   * @param id The id of the updated user.
+   * @return True if the id was valid, false otherwise.
+   */
+  private boolean validUpdateId(Integer id) {
+    if (id != null) {
+      return true;
+    }
+    else {
+      log.warn("The user id cannot be null on an update.");
       return false;
     }
   }

@@ -67,6 +67,7 @@ class UsersDbService extends TimooviesDbService {
 
   /**
    * Get a dataUser by id.
+   *
    * @param id The id of the user to retrieve.
    * @return The dataUser retrieved by id, or null if it could not be found.
    */
@@ -98,6 +99,7 @@ class UsersDbService extends TimooviesDbService {
 
   /**
    * Get dataUser by username.
+   *
    * @param username the username of the user to retrieve.
    * @return The dataUser retrieved or null if it didn't exist.
    */
@@ -120,6 +122,43 @@ class UsersDbService extends TimooviesDbService {
     return dataUser;
   }
 
+  /**
+   * Updates a user in the database.
+   *
+   * @param dataUser The updated dataUser other than the last modified field.
+   * @return True if it was successful, false otherwise.
+   */
+  Boolean update(DataUser dataUser) {
+    int affectedRows = 0;
+    dataUser.last_modified(Instant.now());
+
+    Connection connection = openConnection();
+
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement("UPDATE users SET username = ?, enc_password = ?, last_modified = ? WHERE id = ?");
+      preparedStatement.setString(1, dataUser.username());
+      preparedStatement.setString(2, dataUser.enc_password());
+      preparedStatement.setTimestamp(3, Timestamp.from(dataUser.last_modified()));
+      preparedStatement.setInt(4, dataUser.id());
+
+
+      affectedRows = preparedStatement.executeUpdate();
+    }
+    catch (SQLException ex) {
+      log.error("The user could not be updated.", ex);
+    }
+
+    closeConnection(connection);
+
+    return (affectedRows > 0);
+  }
+
+  /**
+   * Deletes a user by id.
+   *
+   * @param id The id of the user to delete.
+   * @return True if it was successful, false otherwise.
+   */
   Boolean deleteById(Integer id) {
     int affectedRows = 0;
 
@@ -140,6 +179,12 @@ class UsersDbService extends TimooviesDbService {
     return (affectedRows > 0);
   }
 
+  /**
+   * Deletes a user by username.
+   *
+   * @param username The username of the user to delete.
+   * @return True if it was successful, false otherwise.
+   */
   Boolean deleteByUsername(String username) {
     int affectedRows = 0;
 
@@ -162,7 +207,8 @@ class UsersDbService extends TimooviesDbService {
 
   /**
    * Gets a dataUser by username helper method.
-   * @param username the username of the user to retrieve.
+   *
+   * @param username   the username of the user to retrieve.
    * @param connection The connection to the database.
    * @return The dataUser retrieved from the database or null if it couldn't.
    * @throws SQLException Throws if there was an sql exception on retrieving the data.
@@ -182,6 +228,7 @@ class UsersDbService extends TimooviesDbService {
 
   /**
    * Get a dataUser from a ResultSet.
+   *
    * @param resultSet the resultSet to get the dataUser from.
    * @return The dataUser from the resultSet, null if it doesn't exist.
    * @throws SQLException Throws if there was a sql exception involved.

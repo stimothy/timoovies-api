@@ -47,6 +47,12 @@ public class UsersDataService {
     }
   }
 
+  /**
+   * Gets a user by id.
+   *
+   * @param id The id of the user to get.
+   * @return The User that matches that id, or null if it wasn't found.
+   */
   public User getUser(Integer id) {
     DataUser dataUser = usersDbService.getById(id);
 
@@ -60,6 +66,12 @@ public class UsersDataService {
     }
   }
 
+  /**
+   * Gets a user by username.
+   *
+   * @param username The username of the user to get.
+   * @return The user that matches the username, or null if it wasn't found.
+   */
   public User getUser(String username) {
     DataUser dataUser = usersDbService.getByUsername(username);
 
@@ -73,29 +85,56 @@ public class UsersDataService {
     }
   }
 
-  public Boolean deleteUser(Integer id) {
-    Boolean success = usersDbService.deleteById(id);
+  /**
+   * Updates a user in the database.
+   *
+   * @param user The updated user.
+   * @return True if it was successful, false otherwise.
+   */
+  public Boolean updateUser(User user) {
+    DataUser dataUser = userMapper.map(user);
 
-    if (!success) {
-      log.warn("The user could not be deleted with id: {}", id);
-      return success;
+    if (!usersDbService.update(dataUser)) {
+      log.warn("A user was not updated in the database with. user: {}", user);
+      return false;
     }
     else {
-      log.info("The user was deleted");
-      return success;
+      log.info("The user was updated successfully. user: {}", user);
+      return true;
     }
   }
 
-  public Boolean deleteUser(String username) {
-    Boolean success = usersDbService.deleteByUsername(username);
-
-    if (!success) {
-      log.warn("The user could not be deleted with username: {}", username);
-      return success;
+  /**
+   * Deletes a user by id
+   *
+   * @param id The id of the user to delete.
+   * @return True if it was successful, false otherwise.
+   */
+  public Boolean deleteUser(Integer id) {
+    if (!usersDbService.deleteById(id)) {
+      log.warn("The user could not be deleted with id: {}", id);
+      return false;
     }
     else {
       log.info("The user was deleted");
-      return success;
+      return true;
+    }
+  }
+
+  /**
+   * Deletes a user by username.
+   *
+   * @param username The username of the user to be deleted.
+   * @return True if it was successful, false otherwise.
+   */
+  public Boolean deleteUser(String username) {
+    if (!usersDbService.deleteByUsername(username)) {
+      log.warn("The user could not be deleted with username: {}", username);
+      return false;
+    }
+    else {
+      log.info("The user was deleted");
+      return true;
     }
   }
 }

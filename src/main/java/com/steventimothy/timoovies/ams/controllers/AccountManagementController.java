@@ -48,6 +48,7 @@ public class AccountManagementController {
 
   /**
    * Gets a user by id from the database.
+   *
    * @param id The id of the user to retrieve.
    * @return returns the user associated with that id if it exists, 400 if not.
    */
@@ -68,6 +69,7 @@ public class AccountManagementController {
 
   /**
    * Gets a user by username from the database.
+   *
    * @param username The username of the user to retrieve.
    * @return returns the user associated with that username if it exists, 400 if not.
    */
@@ -87,7 +89,28 @@ public class AccountManagementController {
   }
 
   /**
+   * Updates a user in the system.
+   *
+   * @param user The user to create.
+   * @return Ok if successful, bad request otherwise.
+   */
+  @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity updateUser(@RequestBody User user) {
+    log.info("PUT: /ams - Body: user={}", user);
+
+    if (accountManagementService.updateUser(user)) {
+      log.info("PUT: /ams - Successful");
+      return ResponseEntity.ok().build();
+    }
+    else {
+      log.warn("PUT: /ams - Could not update the user: {}", user);
+      return ResponseEntity.badRequest().build();
+    }
+  }
+
+  /**
    * Deletes a user given a specific id.
+   *
    * @param id the id of the user to delete.
    * @return Ok if it was successful, false otherwise.
    */
@@ -107,6 +130,7 @@ public class AccountManagementController {
 
   /**
    * Deletes a user given a specific username.
+   *
    * @param username the username of the user to delete.
    * @return Ok if it was successful, false otherwise.
    */
