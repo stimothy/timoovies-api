@@ -1,4 +1,4 @@
-package com.steventimothy.timoovies.repository.schema;
+package com.steventimothy.timoovies.repository.schemas;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Data;
@@ -20,7 +20,7 @@ public class DataUser {
   /**
    * The id of the user.
    */
-  private Integer id;
+  private Long id;
   /**
    * The username of the user.
    */

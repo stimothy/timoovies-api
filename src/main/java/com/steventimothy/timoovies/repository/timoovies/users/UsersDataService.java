@@ -1,7 +1,7 @@
 package com.steventimothy.timoovies.repository.timoovies.users;
 
-import com.steventimothy.timoovies.repository.schema.DataUser;
-import com.steventimothy.timoovies.schema.User;
+import com.steventimothy.timoovies.repository.schemas.DataUser;
+import com.steventimothy.timoovies.schemas.users.User;
 import com.steventimothy.timoovies.utils.users.UserMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,9 +33,9 @@ public class UsersDataService {
    * @param user the user to create in the database.
    * @return The id of the user created in the database. Null if it couldn't be created.
    */
-  public Integer createUser(User user) {
+  public Long createUser(User user) {
     DataUser dataUser = userMapper.map(user);
-    Integer id = usersDbService.insert(dataUser);
+    Long id = usersDbService.insert(dataUser);
 
     if (id == null) {
       log.warn("The user was not created in the database. user: {}", user);

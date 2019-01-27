@@ -1,6 +1,7 @@
 package com.steventimothy.timoovies.utils.users;
 
-import com.steventimothy.timoovies.schema.User;
+import com.steventimothy.timoovies.schemas.ids.UserId;
+import com.steventimothy.timoovies.schemas.users.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -18,14 +19,12 @@ public class UserValidator {
    * @param user The user to validate.
    * @return True if user is valid, false otherwise.
    */
-  public boolean validateUser(User user) {
+  public boolean validateCreateUser(User user) {
     if (user != null && validUserData(user)) {
       return true;
     }
     else {
-      if (user == null) {
-        log.warn("Couldn't validate a null user.");
-      }
+      log.warn("User is not valid for creation. user: {}", user);
       return false;
     }
   }
@@ -41,9 +40,7 @@ public class UserValidator {
       return true;
     }
     else {
-      if (user == null) {
-        log.warn("Couldn't validate a null user.");
-      }
+      log.warn("User is not valid for updates. user: {}", user);
       return false;
     }
   }
@@ -55,7 +52,13 @@ public class UserValidator {
    * @return True if the user has valid data, false otherwise.
    */
   private boolean validUserData(User user) {
-    return (validId(user.id()) && validUsernamePassword(user.username(), user.password()));
+    if (validCreateId(user.userId()) && validUsernamePassword(user.username(), user.password())) {
+      return true;
+    }
+    else {
+      log.warn("The user has invalid data.");
+      return false;
+    }
   }
 
   /**
@@ -65,18 +68,18 @@ public class UserValidator {
    * @return True if the user has valid data, false otherwise.
    */
   private boolean validUpdateUserData(User user) {
-    return validUpdateId(user.id()) && validUsernamePassword(user.username(), user.password());
+    return validUpdateId(user.userId()) && validUsernamePassword(user.username(), user.password());
   }
 
   /**
    * Validates that the id is a valid id. Ids 1 through 10 are for testing
    * anything else should be null.
    *
-   * @param id The id of the user.
+   * @param userId The id of the user.
    * @return true if valid, false otherwise.
    */
-  private boolean validId(Integer id) {
-    if (id == null || (id > 0 && id <= 10)) {
+  private boolean validCreateId(UserId userId) {
+    if (userId != null && (userId.rawId() == null || (userId.rawId() > 0 && userId.rawId() <= 10))) {
       return true;
     }
     else {
@@ -88,11 +91,11 @@ public class UserValidator {
   /**
    * Validates that the user cannot have a null id.
    *
-   * @param id The id of the updated user.
+   * @param userId The id of the updated user.
    * @return True if the id was valid, false otherwise.
    */
-  private boolean validUpdateId(Integer id) {
-    if (id != null) {
+  private boolean validUpdateId(UserId userId) {
+    if (userId != null && userId.rawId() != null) {
       return true;
     }
     else {

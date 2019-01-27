@@ -1,6 +1,5 @@
 package com.steventimothy.timoovies.ams.controllers;
 
-import com.steventimothy.timoovies.BaseComponent;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -9,7 +8,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AmsHealthCheckControllerTest extends BaseComponent {
+public class AmsHealthCheckControllerTest extends ControllersBaseComponent {
 
   /**
    * This tests the ams health endpoint.

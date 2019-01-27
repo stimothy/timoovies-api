@@ -1,7 +1,7 @@
 package com.steventimothy.timoovies.ams.services;
 
 import com.steventimothy.timoovies.repository.timoovies.users.UsersDataService;
-import com.steventimothy.timoovies.schema.User;
+import com.steventimothy.timoovies.schemas.users.User;
 import com.steventimothy.timoovies.utils.users.UserValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +35,8 @@ public class AccountManagementService {
    * @param user The user to create.
    * @return The id of the user that was created.
    */
-  public Integer createUser(User user) {
-    if (userValidator.validateUser(user)) {
+  public Long createUser(User user) {
+    if (userValidator.validateCreateUser(user)) {
       log.info("Attempting to create the user: {}", user);
       return usersDataService.createUser(user);
     }
@@ -91,7 +91,7 @@ public class AccountManagementService {
       log.info("Attempting to update a user with: {}", user);
 
       //Get the old user.
-      User oldUser = getUser(user.id());
+      User oldUser = getUser(user.userId().getEncodedValue());
 
       if (oldUser != null) {
         return usersDataService.updateUser(user);

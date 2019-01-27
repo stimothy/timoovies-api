@@ -2,7 +2,7 @@ package com.steventimothy.timoovies.repository.timoovies.users;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 import com.steventimothy.timoovies.repository.config.DbConfig;
-import com.steventimothy.timoovies.repository.schema.DataUser;
+import com.steventimothy.timoovies.repository.schemas.DataUser;
 import com.steventimothy.timoovies.repository.timoovies.TimooviesDbService;
 import com.steventimothy.timoovies.repository.timoovies.config.TimooviesDbConfig;
 import com.steventimothy.timoovies.repository.timoovies.users.config.UsersDbConfig;
@@ -32,9 +32,9 @@ class UsersDbService extends TimooviesDbService {
    * @param dataUser the user to insert.
    * @return The id of the user after inserting.
    */
-  Integer insert(DataUser dataUser) {
+  Long insert(DataUser dataUser) {
     //Do some initial setup and update the timestamps.
-    Integer id = null;
+    Long id = null;
     dataUser.date_created(Instant.now());
     dataUser.last_modified(dataUser.date_created());
 
@@ -44,7 +44,7 @@ class UsersDbService extends TimooviesDbService {
     try {
       //Insert the user.
       PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO " + dbConfig.getTableName() + " VALUES(?, ?, ?, ?, ?)");
-      preparedStatement.setInt(1, dataUser.id());
+      preparedStatement.setLong(1, dataUser.id());
       preparedStatement.setString(2, dataUser.username());
       preparedStatement.setString(3, dataUser.enc_password());
       preparedStatement.setTimestamp(4, Timestamp.from(dataUser.date_created()));
@@ -139,7 +139,7 @@ class UsersDbService extends TimooviesDbService {
       preparedStatement.setString(1, dataUser.username());
       preparedStatement.setString(2, dataUser.enc_password());
       preparedStatement.setTimestamp(3, Timestamp.from(dataUser.last_modified()));
-      preparedStatement.setInt(4, dataUser.id());
+      preparedStatement.setLong(4, dataUser.id());
 
 
       affectedRows = preparedStatement.executeUpdate();
@@ -239,7 +239,7 @@ class UsersDbService extends TimooviesDbService {
     //Get the dataUser.
     if (resultSet.next()) {
       dataUser = new DataUser()
-          .id(resultSet.getInt("id"))
+          .id(resultSet.getLong("id"))
           .username(resultSet.getString("username"))
           .enc_password(resultSet.getString("enc_password"))
           .date_created(resultSet.getTimestamp("date_created").toInstant())

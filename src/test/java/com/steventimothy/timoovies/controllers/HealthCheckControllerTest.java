@@ -9,7 +9,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class HealthCheckControllerTest extends BaseComponent {
+public class HealthCheckControllerTest extends ControllersBaseComponent {
 
   /**
    * This tests the health endpoint.

@@ -1,6 +1,7 @@
-package com.steventimothy.timoovies.schema;
+package com.steventimothy.timoovies.schemas.users;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.steventimothy.timoovies.schemas.ids.UserId;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -18,7 +19,7 @@ public class User {
   /**
    * The id of the user.
    */
-  private Integer id;
+  private UserId userId;
   /**
    * The username of the user.
    */

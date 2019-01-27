@@ -1,7 +1,8 @@
 package com.steventimothy.timoovies.utils.users;
 
-import com.steventimothy.timoovies.repository.schema.DataUser;
-import com.steventimothy.timoovies.schema.User;
+import com.steventimothy.timoovies.repository.schemas.DataUser;
+import com.steventimothy.timoovies.schemas.users.User;
+import com.steventimothy.timoovies.schemas.ids.UserId;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,7 @@ public class UserMapper {
    */
   public DataUser map(User user) {
     return new DataUser()
-        .id(user.id())
+        .id(user.userId().rawId())
         .username(user.username())
         .enc_password(user.password());
   }
@@ -34,7 +35,8 @@ public class UserMapper {
    */
   public User map(DataUser dataUser) {
     return new User()
-        .id(dataUser.id())
+        .userId(new UserId()
+            .rawId(dataUser.id()))
         .username(dataUser.username())
         .password(dataUser.enc_password());
   }
