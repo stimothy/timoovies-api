@@ -29,7 +29,7 @@ public class SessionId implements Id {
    */
   @Override
   public String getEncodedValue() {
-    return "session." + rawId;
+    return (rawId == null) ? null : "session." + rawId;
   }
 
   /**

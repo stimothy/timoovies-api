@@ -21,10 +21,15 @@ public class UserMapper {
    * @return the dataUser produced.
    */
   public DataUser map(User user) {
-    return new DataUser()
-        .id(user.userId().rawId())
-        .username(user.username())
-        .enc_password(user.password());
+    if (user != null) {
+      return new DataUser()
+          .id(user.userId().rawId())
+          .username(user.username())
+          .enc_password(user.password());
+    }
+    else {
+      return null;
+    }
   }
 
   /**
@@ -34,10 +39,15 @@ public class UserMapper {
    * @return The user produced.
    */
   public User map(DataUser dataUser) {
-    return new User()
-        .userId(new UserId()
-            .rawId(dataUser.id()))
-        .username(dataUser.username())
-        .password(dataUser.enc_password());
+    if (dataUser != null) {
+      return new User()
+          .userId(new UserId()
+              .rawId(dataUser.id()))
+          .username(dataUser.username())
+          .password(dataUser.enc_password());
+    }
+    else {
+      return null;
+    }
   }
 }

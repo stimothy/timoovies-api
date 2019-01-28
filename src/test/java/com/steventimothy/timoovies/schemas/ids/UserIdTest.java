@@ -28,7 +28,7 @@ public class UserIdTest extends IdsBaseComponent {
     UserId userId = createUserId();
 
     //Set the encodedValue.
-    Long id2 = 2L;
+    Long id2 = 5L;
     userId.setEncodedValue("user." + id2);
 
     assertThat(userId.getEncodedValue())
@@ -45,7 +45,7 @@ public class UserIdTest extends IdsBaseComponent {
     UserId userId = createUserId();
 
     //Change the encoded value.
-    userId.setEncodedValue("session." + 2L);
+    userId.setEncodedValue("session." + 5L);
 
     fail();
   }
@@ -71,7 +71,7 @@ public class UserIdTest extends IdsBaseComponent {
     UserId userId = createUserId();
 
     //Change the encoded value.
-    userId.setEncodedValue("user.." + 2L);
+    userId.setEncodedValue("user.." + 5L);
 
     fail();
   }
@@ -84,7 +84,7 @@ public class UserIdTest extends IdsBaseComponent {
     UserId userId = createUserId();
 
     //Change the encoded value.
-    userId.setEncodedValue("." + 2L);
+    userId.setEncodedValue("." + 5L);
 
     fail();
   }
@@ -97,7 +97,7 @@ public class UserIdTest extends IdsBaseComponent {
     UserId userId = createUserId();
 
     //Change the encoded value.
-    userId.setEncodedValue("user" + 2L);
+    userId.setEncodedValue("user" + 5L);
 
     fail();
   }
@@ -131,7 +131,7 @@ public class UserIdTest extends IdsBaseComponent {
    */
   @Test
   public void testConstructorEncodedValue() {
-    Long id = 1L;
+    Long id = 5L;
     UserId userId = new UserId("user." + id);
 
     assertThat(userId.getEncodedValue())
@@ -145,7 +145,7 @@ public class UserIdTest extends IdsBaseComponent {
    */
   @Test(expected = IllegalArgumentException.class)
   public void testConstructorEncodedValue_BadEncodedValue() {
-    new UserId("session." + 1L);
+    new UserId("session." + 5L);
 
     fail();
   }

@@ -79,7 +79,7 @@ public class UserValidator {
    * @return true if valid, false otherwise.
    */
   private boolean validCreateId(UserId userId) {
-    if (userId != null && (userId.rawId() == null || (userId.rawId() > 0 && userId.rawId() <= 10))) {
+    if (userId != null && (userId.getEncodedValue() == null || (userId.rawId() > 0 && userId.rawId() <= 10))) {
       return true;
     }
     else {
@@ -95,7 +95,7 @@ public class UserValidator {
    * @return True if the id was valid, false otherwise.
    */
   private boolean validUpdateId(UserId userId) {
-    if (userId != null && userId.rawId() != null) {
+    if (userId != null && userId.getEncodedValue() != null) {
       return true;
     }
     else {

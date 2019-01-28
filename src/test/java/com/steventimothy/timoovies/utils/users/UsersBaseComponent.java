@@ -23,25 +23,6 @@ public abstract class UsersBaseComponent extends UtilsBaseComponent {
   protected UserValidator userValidator;
 
   /**
-   * Creates a user.
-   * @return The created user.
-   */
-  protected User createUser() {
-    //Create the user.
-    User user = new User()
-        .userId(createUserId())
-        .username("testUser1")
-        .password("hiPPos3atGr@ss");
-
-    assertThat(user.username())
-        .isEqualTo("testUser1");
-    assertThat(user.password())
-        .isEqualTo("hiPPos3atGr@ss");
-
-    return user;
-  }
-
-  /**
    * Creates a dataUser.
    * @return The dataUser created.
    */
@@ -49,15 +30,15 @@ public abstract class UsersBaseComponent extends UtilsBaseComponent {
     //Create the dataUser.
     DataUser dataUser = new DataUser()
         .id(createUserId().rawId())
-        .username("testUser1")
-        .enc_password("hiPPos3atGr@ss")
+        .username("testUser3")
+        .enc_password("ch33t@sRunFaSt")
         .date_created(Instant.now())
         .last_modified(Instant.now());
 
     assertThat(dataUser.username())
-        .isEqualTo("testUser1");
+        .isEqualTo("testUser3");
     assertThat(dataUser.enc_password())
-        .isEqualTo("hiPPos3atGr@ss");
+        .isEqualTo("ch33t@sRunFaSt");
     assertThat(dataUser.date_created())
         .isNotNull();
     assertThat(dataUser.last_modified())

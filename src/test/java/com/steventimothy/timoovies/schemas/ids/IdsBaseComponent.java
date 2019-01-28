@@ -13,8 +13,16 @@ public abstract class IdsBaseComponent extends SchemasBaseComponent {
    * @return The sessionId created.
    */
   protected SessionId createSessionId() {
+    return createSessionId(UUID.randomUUID());
+  }
+
+  /**
+   * Creates a universally unique sessionId.
+   * @param uuid the uuid to create.
+   * @return The sessionId with that uuid.
+   */
+  protected SessionId createSessionId(UUID uuid) {
     //Create a sessionId.
-    UUID uuid = UUID.randomUUID();
     SessionId sessionId = new SessionId()
         .rawId(uuid);
 

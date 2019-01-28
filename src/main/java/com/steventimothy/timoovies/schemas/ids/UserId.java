@@ -27,7 +27,7 @@ public class UserId implements Id {
    */
   @Override
   public String getEncodedValue() {
-    return "user." + rawId;
+    return (rawId == null) ? null : "user." + rawId;
   }
 
   /**

@@ -30,8 +30,17 @@ public abstract class BaseComponent {
    * @return The userId created.
    */
   protected UserId createUserId() {
+    return createUserId(3L);
+  }
+
+  /**
+   * Creates a userId.
+   * @param id The id to create.
+   * @return The userId created.
+   */
+  protected UserId createUserId(Long id) {
+
     //Create a userId.
-    Long id = 1L;
     UserId userId = new UserId()
         .rawId(id);
 
@@ -40,6 +49,56 @@ public abstract class BaseComponent {
 
     return userId;
   }
+
+  /**
+   * Creates a userId.
+   * @return The userId created.
+   */
+  protected UserId createAltUserId() {
+    return createUserId(4L);
+  }
+
+  /**
+   * Creates a local user.
+   * @return The local created user.
+   */
+  protected User createLocalUser() {
+    return createLocalUser(createUserId(), "testUser3", "ch33t@sRunFaSt");
+  }
+
+  /**
+   * Creates a local user.
+   * @param userId The userId of the user.
+   * @param username The username of the user.
+   * @param password The password of the user.
+   * @return the local created user.
+   */
+  protected User createLocalUser(UserId userId, String username, String password) {
+
+    //Create the user.
+    User user = new User()
+        .userId(userId)
+        .username(username)
+        .password(password);
+
+    assertThat(user.userId())
+        .isEqualTo(userId);
+    assertThat(user.username())
+        .isEqualTo(username);
+    assertThat(user.password())
+        .isEqualTo(password);
+
+    return user;
+  }
+
+  /**
+   * Create an alternate local user.
+   * @return The created alternate local user.
+   */
+  protected User createAltLocalUser() {
+    return createLocalUser(createAltUserId(), "testUser4", "anTsW@lk!na1ine");
+  }
+
 //  /**
 //   * The test user 1 id.
 //   */
@@ -99,45 +158,9 @@ public abstract class BaseComponent {
 //    }
 //  }
 
-  /**
-   * Creates a user in the database and returns its id.
-   *
-   * @param user The user to create in the database.
-   * @return The id of the user created.
-   */
-  protected Integer createUser(User user) {
-    ResponseEntity<Integer> responseEntity = requestCreateUser(user);
-    assertStatus(responseEntity, HttpStatus.OK);
 
-    return responseEntity.getBody();
-  }
 
-  /**
-   * Creates a user in the database.
-   *
-   * @param user The user to create in the database.
-   * @return The response from the rest call to create a user.
-   */
-  protected ResponseEntity<Integer> requestCreateUser(User user) {
-    return this.restTemplate.exchange(RequestEntity.post(UriComponentsBuilder.fromUriString(getAmsPath())
-        .build().toUri())
-        .accept(MediaType.APPLICATION_JSON)
-        .contentType(MediaType.APPLICATION_JSON)
-        .body(user), Integer.class);
-  }
-//
-//  /**
-//   * Gets the user based on an id.
-//   *
-//   * @param id The id of the user to get.
-//   * @return The user retrieved from the database.
-//   */
-//  protected User getUser(Integer id) {
-//    ResponseEntity<User> responseEntity = requestGetUserById(id);
-//    assertStatus(responseEntity, HttpStatus.OK);
-//
-//    return responseEntity.getBody();
-//  }
+
 //
 //  /**
 //   * Gets the user based on a username.
@@ -152,18 +175,7 @@ public abstract class BaseComponent {
 //    return responseEntity.getBody();
 //  }
 //
-//  /**
-//   * Gets the user based on an id.
-//   *
-//   * @param id The id of the user to get.
-//   * @return The response of the rest call to get a user by id.
-//   */
-//  protected ResponseEntity<User> requestGetUserById(Integer id) {
-//    return this.restTemplate.exchange(RequestEntity.get(UriComponentsBuilder.fromUriString(getAmsPath() + "/id/" + id)
-//        .build().toUri())
-//        .accept(MediaType.APPLICATION_JSON)
-//        .build(), User.class);
-//  }
+
 //
 //  /**
 //   * Gets the user based on a username.

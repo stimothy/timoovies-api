@@ -1,6 +1,7 @@
 package com.steventimothy.timoovies.ams.controllers;
 
 import com.steventimothy.timoovies.ams.services.AccountManagementService;
+import com.steventimothy.timoovies.schemas.ids.UserId;
 import com.steventimothy.timoovies.schemas.users.User;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,7 @@ public class AccountManagementController {
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity createUser(@RequestBody User user) {
     log.info("POST: /ams - Body: user={}", user);
-    Long id = accountManagementService.createUser(user);
+    UserId id = accountManagementService.createUser(user);
 
     if (id != null) {
       log.info("POST: /ams - Response: id={}", id);
@@ -42,6 +43,50 @@ public class AccountManagementController {
     }
     else {
       log.warn("POST: /ams - Could not create the user: {}", user);
+      return ResponseEntity.badRequest().build();
+    }
+  }
+
+  /**
+   * Gets a user by id from the database.
+   *
+   * @param id The id of the user to retrieve.
+   * @return returns the user associated with that id if it exists, 400 if not.
+   */
+  @GetMapping(value = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity getUserById(@PathVariable(value = "id") String id) {
+    log.info("GET: /ams/user/{id} - id=", id);
+    UserId userId = new UserId(id);
+
+    User user = accountManagementService.getUserById(userId);
+
+    if (user != null) {
+      log.info("GET: /ams/user/{id} - Response: user={}", user);
+      return ResponseEntity.ok(user);
+    }
+    else {
+      log.warn("GET: /ams/user/{id} - Could not retrieve the user by userId: {}", userId);
+      return ResponseEntity.badRequest().build();
+    }
+  }
+
+  /**
+   * Deletes a user given a specific id.
+   *
+   * @param id the id of the user to delete.
+   * @return Ok if it was successful, bad request otherwise.
+   */
+  @DeleteMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity deleteUserById(@PathVariable(value = "id") String id) {
+    log.info("DELETE: /ams/id/{id} - id=", id);
+    UserId userId = new UserId(id);
+
+    if (accountManagementService.deleteUserById(userId)) {
+      log.info("DELETE: /ams/id/{id} - successful");
+      return ResponseEntity.ok().build();
+    }
+    else {
+      log.warn("DELETE: /ams/id/{id} - Could not delete user by userId: {}", userId);
       return ResponseEntity.badRequest().build();
     }
   }
@@ -108,25 +153,7 @@ public class AccountManagementController {
 //    }
 //  }
 //
-//  /**
-//   * Deletes a user given a specific id.
-//   *
-//   * @param id the id of the user to delete.
-//   * @return Ok if it was successful, false otherwise.
-//   */
-//  @DeleteMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-//  public ResponseEntity deleteUserById(@PathVariable(value = "id") Integer id) {
-//    log.info("DELETE: /ams/id/{id} - id=", id);
-//
-//    if (accountManagementService.deleteUser(id)) {
-//      log.info("DELETE: /ams/id/{id} - successful");
-//      return ResponseEntity.ok().build();
-//    }
-//    else {
-//      log.warn("DELETE: /ams/id/{id} - Could not delete user by id: {}", id);
-//      return ResponseEntity.badRequest().build();
-//    }
-//  }
+
 //
 //  /**
 //   * Deletes a user given a specific username.

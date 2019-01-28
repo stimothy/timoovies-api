@@ -12,7 +12,7 @@ public class UserValidatorTest extends UsersBaseComponent {
    */
   @Test
   public void testValidateCreateUser_TestId_LowerBound() {
-    User user = createUser();
+    User user = createLocalUser();
     user.userId().rawId(1L);
 
     assertThat(userValidator.validateCreateUser(user))
@@ -24,7 +24,7 @@ public class UserValidatorTest extends UsersBaseComponent {
    */
   @Test
   public void testValidateCreateUser_TestId_UpperBound() {
-    User user = createUser();
+    User user = createLocalUser();
     user.userId().rawId(10L);
 
     assertThat(userValidator.validateCreateUser(user))
@@ -36,7 +36,7 @@ public class UserValidatorTest extends UsersBaseComponent {
    */
   @Test
   public void testValidateCreateUser_NullId() {
-    User user = createUser();
+    User user = createLocalUser();
     user.userId().rawId(null);
 
     assertThat(userValidator.validateCreateUser(user))
@@ -48,7 +48,7 @@ public class UserValidatorTest extends UsersBaseComponent {
    */
   @Test
   public void testValidateCreateUser_NotTestId_LowerBound() {
-    User user = createUser();
+    User user = createLocalUser();
     user.userId().rawId(0L);
 
     assertThat(userValidator.validateCreateUser(user))
@@ -60,7 +60,7 @@ public class UserValidatorTest extends UsersBaseComponent {
    */
   @Test
   public void testValidateCreateUser_NotTestId_UpperBound() {
-    User user = createUser();
+    User user = createLocalUser();
     user.userId().rawId(11L);
 
     assertThat(userValidator.validateCreateUser(user))
@@ -72,7 +72,7 @@ public class UserValidatorTest extends UsersBaseComponent {
    */
   @Test
   public void testValidateCreateUser_NullUserIdWrapper() {
-    User user = createUser();
+    User user = createLocalUser();
     user.userId(null);
 
     assertThat(userValidator.validateCreateUser(user))
@@ -84,7 +84,7 @@ public class UserValidatorTest extends UsersBaseComponent {
    */
   @Test
   public void testValidateCreateUser_NullUsername() {
-    User user = createUser();
+    User user = createLocalUser();
     user.username(null);
 
     assertThat(userValidator.validateCreateUser(user))
@@ -96,7 +96,7 @@ public class UserValidatorTest extends UsersBaseComponent {
    */
   @Test
   public void testValidateCreateUser_NullPassword() {
-    User user = createUser();
+    User user = createLocalUser();
     user.password(null);
 
     assertThat(userValidator.validateCreateUser(user))
@@ -108,7 +108,7 @@ public class UserValidatorTest extends UsersBaseComponent {
    */
   @Test
   public void testValidateUpdateUser() {
-    User user = createUser();
+    User user = createLocalUser();
 
     assertThat(userValidator.validateUpdateUser(user))
         .isTrue();
@@ -119,7 +119,7 @@ public class UserValidatorTest extends UsersBaseComponent {
    */
   @Test
   public void testValidateUpdateUser_NullId() {
-    User user = createUser();
+    User user = createLocalUser();
     user.userId().rawId(null);
 
     assertThat(userValidator.validateUpdateUser(user))
@@ -131,7 +131,7 @@ public class UserValidatorTest extends UsersBaseComponent {
    */
   @Test
   public void testValidateUpdateUser_NullUserIdWrapper() {
-    User user = createUser();
+    User user = createLocalUser();
     user.userId(null);
 
     assertThat(userValidator.validateUpdateUser(user))
@@ -143,7 +143,7 @@ public class UserValidatorTest extends UsersBaseComponent {
    */
   @Test
   public void testValidateUpdateUser_NullUsername() {
-    User user = createUser();
+    User user = createLocalUser();
     user.username(null);
 
     assertThat(userValidator.validateUpdateUser(user))
@@ -155,7 +155,7 @@ public class UserValidatorTest extends UsersBaseComponent {
    */
   @Test
   public void testValidateUpdateUser_NullPassword() {
-    User user = createUser();
+    User user = createLocalUser();
     user.password(null);
 
     assertThat(userValidator.validateUpdateUser(user))

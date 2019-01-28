@@ -1,6 +1,7 @@
 package com.steventimothy.timoovies.ams.services;
 
 import com.steventimothy.timoovies.repository.timoovies.users.UsersDataService;
+import com.steventimothy.timoovies.schemas.ids.UserId;
 import com.steventimothy.timoovies.schemas.users.User;
 import com.steventimothy.timoovies.utils.users.UserValidator;
 import lombok.AllArgsConstructor;
@@ -35,7 +36,7 @@ public class AccountManagementService {
    * @param user The user to create.
    * @return The id of the user that was created.
    */
-  public Long createUser(User user) {
+  public UserId createUser(User user) {
     if (userValidator.validateCreateUser(user)) {
       log.info("Attempting to create the user: {}", user);
       return usersDataService.createUser(user);
@@ -49,95 +50,112 @@ public class AccountManagementService {
   /**
    * Gets a user by id.
    *
-   * @param id The id of the user to get.
+   * @param userId The id of the user to get.
    * @return The User that has that Id or null if it wasn't found.
    */
-  public User getUser(Integer id) {
-    if (id != null) {
-      log.info("Attempting to retrieve the user by id: {}", id);
-      return usersDataService.getUser(id);
+  public User getUserById(UserId userId) {
+    if (userId.getEncodedValue() != null) {
+      log.info("Attempting to retrieve the user by userId: {}", userId);
+      return usersDataService.getUser(userId);
     }
     else {
-      log.warn("The id cannot be null.");
+      log.warn("The userId cannot be null.");
       return null;
-    }
-  }
-
-  /**
-   * Gets the user by username
-   *
-   * @param username The username of the user to get.
-   * @return The user that has that username or null if it wasn't found.
-   */
-  public User getUser(String username) {
-    if (username != null) {
-      log.info("Attempting to retrieve the user by username: {}", username);
-      return usersDataService.getUser(username);
-    }
-    else {
-      log.warn("The username cannot be null.");
-      return null;
-    }
-  }
-
-  /**
-   * Updates a user in the database.
-   *
-   * @param user The updated user.
-   * @return True if it was successful, false otherwise.
-   */
-  public Boolean updateUser(User user) {
-    if (userValidator.validateUpdateUser(user)) {
-      log.info("Attempting to update a user with: {}", user);
-
-      //Get the old user.
-      User oldUser = getUser(user.userId().getEncodedValue());
-
-      if (oldUser != null) {
-        return usersDataService.updateUser(user);
-      }
-      else {
-        log.warn("The id did not match another user. user: {}", user);
-        return false;
-      }
-    }
-    else {
-      log.warn("The user did not contain the correct information to update. user: {}", user);
-      return false;
     }
   }
 
   /**
    * Delete a user by id.
    *
-   * @param id The id of the user to delete.
+   * @param userId The id of the user to delete.
    * @return True if successful, false otherwise.
    */
-  public Boolean deleteUser(Integer id) {
-    if (id != null) {
-      log.info("Attempting to delete the user by id: {}", id);
-      return usersDataService.deleteUser(id);
+  public Boolean deleteUserById(UserId userId) {
+    if (userId.getEncodedValue() != null) {
+      log.info("Attempting to delete the user by userId: {}", userId);
+      return usersDataService.deleteUser(userId);
     }
     else {
-      log.warn("The id cannot be null.");
+      log.warn("The userId cannot be null.");
       return false;
     }
   }
-
-  /**
-   * Delete a user by username.
-   *
-   * @param username The username of the user to delete.
-   * @return True if it was successful, false otherwise.
-   */
-  public Boolean deleteUser(String username) {
-    if (username != null) {
-      log.info("Attempting to delete the user by username: {}", username);
-      return usersDataService.deleteUser(username);
-    }
-    else {
-      log.warn("The username cannot be null.");
-      return false;
-    }
-  }
+//
+//  /**
+//   * Gets the user by username
+//   *
+//   * @param username The username of the user to get.
+//   * @return The user that has that username or null if it wasn't found.
+//   */
+//  public User getUser(String username) {
+//    if (username != null) {
+//      log.info("Attempting to retrieve the user by username: {}", username);
+//      return usersDataService.getUser(username);
+//    }
+//    else {
+//      log.warn("The username cannot be null.");
+//      return null;
+//    }
+//  }
+//
+//  /**
+//   * Updates a user in the database.
+//   *
+//   * @param user The updated user.
+//   * @return True if it was successful, false otherwise.
+//   */
+//  public Boolean updateUser(User user) {
+//    if (userValidator.validateUpdateUser(user)) {
+//      log.info("Attempting to update a user with: {}", user);
+//
+//      //Get the old user.
+//      User oldUser = getUser(user.userId().getEncodedValue());
+//
+//      if (oldUser != null) {
+//        return usersDataService.updateUser(user);
+//      }
+//      else {
+//        log.warn("The id did not match another user. user: {}", user);
+//        return false;
+//      }
+//    }
+//    else {
+//      log.warn("The user did not contain the correct information to update. user: {}", user);
+//      return false;
+//    }
+//  }
+//
+//  /**
+//   * Delete a user by id.
+//   *
+//   * @param id The id of the user to delete.
+//   * @return True if successful, false otherwise.
+//   */
+//  public Boolean deleteUser(Integer id) {
+//    if (id != null) {
+//      log.info("Attempting to delete the user by id: {}", id);
+//      return usersDataService.deleteUser(id);
+//    }
+//    else {
+//      log.warn("The id cannot be null.");
+//      return false;
+//    }
+//  }
+//
+//  /**
+//   * Delete a user by username.
+//   *
+//   * @param username The username of the user to delete.
+//   * @return True if it was successful, false otherwise.
+//   */
+//  public Boolean deleteUser(String username) {
+//    if (username != null) {
+//      log.info("Attempting to delete the user by username: {}", username);
+//      return usersDataService.deleteUser(username);
+//    }
+//    else {
+//      log.warn("The username cannot be null.");
+//      return false;
+//    }
+//  }
 }

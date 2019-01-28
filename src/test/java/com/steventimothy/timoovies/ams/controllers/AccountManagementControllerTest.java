@@ -1,8 +1,7 @@
 package com.steventimothy.timoovies.ams.controllers;
 
-import com.steventimothy.timoovies.BaseComponent;
-import com.steventimothy.timoovies.schemas.users.User;
 import com.steventimothy.timoovies.schemas.ids.UserId;
+import com.steventimothy.timoovies.schemas.users.User;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,22 +12,19 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
    * This tests that a user can be created and also retrieved by id.
    */
   @Test
-  public void testCreateUserGetUserById() {
+  public void testCreateUser() {
     //Create the user.
-    User user = new User()
-        .userId(new UserId().rawId(3L))
-        .username("bob1234")
-        .password("myPassword");
-    Integer userId = createUser(user);
-//
-//    //Get the created user.
-//    User user2 = getUser(userId);
-//
-//    assertThat(user)
-//        .isEqualTo(user2);
-//
-//    //Clean up.
-//    deleteUser(userId);
+    User user = createLocalUser();
+    UserId userId = createUser(user);
+
+    //Get the created user.
+    User user2 = getUserById(userId);
+
+    assertThat(user)
+        .isEqualToIgnoringGivenFields(user2, "password");
+
+    //Clean up.
+    deleteUserById(userId);
   }
 
 //  /**

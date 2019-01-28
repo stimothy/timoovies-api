@@ -13,7 +13,7 @@ public class UserMapperTest extends UsersBaseComponent {
    */
   @Test
   public void testMapUserToDataUser() {
-    User user = createUser();
+    User user = createLocalUser();
 
     //Map the user.
     DataUser dataUser = userMapper.map(user);
