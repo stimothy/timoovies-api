@@ -473,7 +473,7 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
    */
   @Test
   public void testDeleteUser_ById_NullId() {
-    ResponseEntity responseEntity = requestDeleteUserById(null);
+    ResponseEntity responseEntity = requestDeleteUserById(new UserId());
     assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
   }
 
