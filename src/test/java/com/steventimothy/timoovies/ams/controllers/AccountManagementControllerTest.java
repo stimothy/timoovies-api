@@ -134,6 +134,58 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
   }
 
   /**
+   * Tests that a user cannot be created if the username is too small.
+   */
+  @Test
+  public void testCreateUser_UsernameTooSmall() {
+    //Create the user.
+    User user = createLocalUser(createUserId(), "1234", "myPassword");
+
+    ResponseEntity<UserId> responseEntity = requestCreateUser(user);
+
+    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Tests that a user cannot be created if the password is too small.
+   */
+  @Test
+  public void testCreateUser_PasswordTooSmall() {
+    //Create the user.
+    User user = createLocalUser(createUserId(), "myUsername", "1234");
+
+    ResponseEntity<UserId> responseEntity = requestCreateUser(user);
+
+    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Tests that a user cannot be created if the username is too big.
+   */
+  @Test
+  public void testCreateUser_UsernameTooBig() {
+    //Create the user.
+    User user = createLocalUser(createUserId(), "123456789012345678901234567890123456789012345678901", "myPassword");
+
+    ResponseEntity<UserId> responseEntity = requestCreateUser(user);
+
+    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Tests that a user cannot be created if the password is too big.
+   */
+  @Test
+  public void testCreateUser_PasswordTooBig() {
+    //Create the user.
+    User user = createLocalUser(createUserId(), "myUsername", "12345678901234567890123456789012345678901234567890123456789012345");
+
+    ResponseEntity<UserId> responseEntity = requestCreateUser(user);
+
+    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
    * Tests that you can retrieve a user from the database.
    */
   @Test
@@ -379,6 +431,62 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
 
     //Update the user.
     ResponseEntity responseEntity = requestUpdateUser(user2);
+
+    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Tests that a user cannot be updated if the username is too small.
+   */
+  @Test
+  public void testUpdateUser_UsernameTooSmall() {
+    //Create the users.
+    UserId userId = getOrCreateUserId();
+    User user = createLocalUser(userId, "1234", "myPassword");
+
+    ResponseEntity responseEntity = requestUpdateUser(user);
+
+    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Tests that a user cannot be updated if the password is too small.
+   */
+  @Test
+  public void testUpdateUser_PasswordTooSmall() {
+    //Create the user.
+    UserId userId = getOrCreateUserId();
+    User user = createLocalUser(userId, "myUsername", "1234");
+
+    ResponseEntity responseEntity = requestUpdateUser(user);
+
+    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Tests that a user cannot be updated if the username is too big.
+   */
+  @Test
+  public void testUpdateUser_UsernameTooBig() {
+    //Create the user.
+    UserId userId = getOrCreateUserId();
+    User user = createLocalUser(userId, "123456789012345678901234567890123456789012345678901", "myPassword");
+
+    ResponseEntity responseEntity = requestUpdateUser(user);
+
+    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Tests that a user cannot be updated if the password is too big.
+   */
+  @Test
+  public void testUpdateUser_PasswordTooBig() {
+    //Create the user.
+    UserId userId = getOrCreateUserId();
+    User user = createLocalUser(userId, "myUsername", "12345678901234567890123456789012345678901234567890123456789012345");
+
+    ResponseEntity responseEntity = requestUpdateUser(user);
 
     assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
   }

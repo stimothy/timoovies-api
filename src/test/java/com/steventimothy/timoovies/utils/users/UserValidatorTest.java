@@ -104,6 +104,102 @@ public class UserValidatorTest extends UsersBaseComponent {
   }
 
   /**
+   * Tests that the user can be created with a username more than 4 characters long.
+   */
+  @Test
+  public void testValidateCreateUser_UsernameMinLength() {
+    User user = createLocalUser();
+    user.username("12345");
+
+    assertThat(userValidator.validateCreateUser(user))
+        .isTrue();
+  }
+
+  /**
+   * Tests that the user can be created with a username less than 51 characters long.
+   */
+  @Test
+  public void testValidateCreateUser_UsernameMaxLength() {
+    User user = createLocalUser();
+    user.username("12345678901234567890123456789012345678901234567890");
+
+    assertThat(userValidator.validateCreateUser(user))
+        .isTrue();
+  }
+
+  /**
+   * Tests that the user cannot be created with a username less than 5 characters long.
+   */
+  @Test
+  public void testValidateCreateUser_UsernameLengthTooSmall() {
+    User user = createLocalUser();
+    user.username("1234");
+
+    assertThat(userValidator.validateCreateUser(user))
+        .isFalse();
+  }
+
+  /**
+   * Tests that the user cannot be created with a username more than 50 characters long.
+   */
+  @Test
+  public void testValidateCreateUser_UsernameLengthTooBig() {
+    User user = createLocalUser();
+    user.username("123456789012345678901234567890123456789012345678901");
+
+    assertThat(userValidator.validateCreateUser(user))
+        .isFalse();
+  }
+
+  /**
+   * Tests that the user can be created with a password more than 4 characters long.
+   */
+  @Test
+  public void testValidateCreateUser_PasswordMinLength() {
+    User user = createLocalUser();
+    user.password("12345");
+
+    assertThat(userValidator.validateCreateUser(user))
+        .isTrue();
+  }
+
+  /**
+   * Tests that the user can be created with a password less than 65 characters long.
+   */
+  @Test
+  public void testValidateCreateUser_PasswordMaxLength() {
+    User user = createLocalUser();
+    user.password("1234567890123456789012345678901234567890123456789012345678901234");
+
+    assertThat(userValidator.validateCreateUser(user))
+        .isTrue();
+  }
+
+  /**
+   * Tests that the user cannot be created with a password less than 5 characters long.
+   */
+  @Test
+  public void testValidateCreateUser_PasswordLengthTooSmall() {
+    User user = createLocalUser();
+    user.password("1234");
+
+    assertThat(userValidator.validateCreateUser(user))
+        .isFalse();
+  }
+
+  /**
+   * Tests that the user cannot be created with a password more than 64 characters long.
+   */
+  @Test
+  public void testValidateCreateUser_PasswordLengthTooBig() {
+    User user = createLocalUser();
+    user.password("12345678901234567890123456789012345678901234567890123456789012345");
+
+    assertThat(userValidator.validateCreateUser(user))
+        .isFalse();
+  }
+
+  /**
    * Tests a valid user on update.
    */
   @Test
@@ -157,6 +253,102 @@ public class UserValidatorTest extends UsersBaseComponent {
   public void testValidateUpdateUser_NullPassword() {
     User user = createLocalUser();
     user.password(null);
+
+    assertThat(userValidator.validateUpdateUser(user))
+        .isFalse();
+  }
+
+  /**
+   * Tests that the user can be updated with a username more than 4 characters long.
+   */
+  @Test
+  public void testValidateUpdateUser_UsernameMinLength() {
+    User user = createLocalUser();
+    user.username("12345");
+
+    assertThat(userValidator.validateUpdateUser(user))
+        .isTrue();
+  }
+
+  /**
+   * Tests that the user can be updated with a username less than 51 characters long.
+   */
+  @Test
+  public void testValidateUpdateUser_UsernameMaxLength() {
+    User user = createLocalUser();
+    user.username("12345678901234567890123456789012345678901234567890");
+
+    assertThat(userValidator.validateUpdateUser(user))
+        .isTrue();
+  }
+
+  /**
+   * Tests that the user cannot be updated with a username less than 5 characters long.
+   */
+  @Test
+  public void testValidateUpdateUser_UsernameLengthTooSmall() {
+    User user = createLocalUser();
+    user.username("1234");
+
+    assertThat(userValidator.validateUpdateUser(user))
+        .isFalse();
+  }
+
+  /**
+   * Tests that the user cannot be updated with a username more than 50 characters long.
+   */
+  @Test
+  public void testValidateUpdateUser_UsernameLengthTooBig() {
+    User user = createLocalUser();
+    user.username("123456789012345678901234567890123456789012345678901");
+
+    assertThat(userValidator.validateUpdateUser(user))
+        .isFalse();
+  }
+
+  /**
+   * Tests that the user can be updated with a password more than 4 characters long.
+   */
+  @Test
+  public void testValidateUpdateUser_PasswordMinLength() {
+    User user = createLocalUser();
+    user.password("12345");
+
+    assertThat(userValidator.validateUpdateUser(user))
+        .isTrue();
+  }
+
+  /**
+   * Tests that the user can be updated with a password less than 65 characters long.
+   */
+  @Test
+  public void testValidateUpdateUser_PasswordMaxLength() {
+    User user = createLocalUser();
+    user.password("1234567890123456789012345678901234567890123456789012345678901234");
+
+    assertThat(userValidator.validateUpdateUser(user))
+        .isTrue();
+  }
+
+  /**
+   * Tests that the user cannot be updated with a password less than 5 characters long.
+   */
+  @Test
+  public void testValidateUpdateUser_PasswordLengthTooSmall() {
+    User user = createLocalUser();
+    user.password("1234");
+
+    assertThat(userValidator.validateUpdateUser(user))
+        .isFalse();
+  }
+
+  /**
+   * Tests that the user cannot be updated with a password more than 64 characters long.
+   */
+  @Test
+  public void testValidateUpdateUser_PasswordLengthTooBig() {
+    User user = createLocalUser();
+    user.password("12345678901234567890123456789012345678901234567890123456789012345");
 
     assertThat(userValidator.validateUpdateUser(user))
         .isFalse();

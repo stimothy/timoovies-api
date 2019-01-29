@@ -158,6 +158,62 @@ public class AccountManagementServiceTest extends ServicesBaseComponent {
   }
 
   /**
+   * Tests that a user cannot be created if the username is too small.
+   */
+  @Test
+  public void testCreateUser_UsernameTooSmall() {
+    //Create the user.
+    User user = createLocalUser(createUserId(), "1234", "myPassword");
+
+    UserId userId = createUser(user);
+
+    assertThat(userId.getEncodedValue())
+        .isNull();
+  }
+
+  /**
+   * Tests that a user cannot be created if the password is too small.
+   */
+  @Test
+  public void testCreateUser_PasswordTooSmall() {
+    //Create the user.
+    User user = createLocalUser(createUserId(), "myUsername", "1234");
+
+    UserId userId = createUser(user);
+
+    assertThat(userId.getEncodedValue())
+        .isNull();
+  }
+
+  /**
+   * Tests that a user cannot be created if the username is too big.
+   */
+  @Test
+  public void testCreateUser_UsernameTooBig() {
+    //Create the user.
+    User user = createLocalUser(createUserId(), "123456789012345678901234567890123456789012345678901", "myPassword");
+
+    UserId userId = createUser(user);
+
+    assertThat(userId.getEncodedValue())
+        .isNull();
+  }
+
+  /**
+   * Tests that a user cannot be created if the password is too big.
+   */
+  @Test
+  public void testCreateUser_PasswordTooBig() {
+    //Create the user.
+    User user = createLocalUser(createUserId(), "myUsername", "12345678901234567890123456789012345678901234567890123456789012345");
+
+    UserId userId = createUser(user);
+
+    assertThat(userId.getEncodedValue())
+        .isNull();
+  }
+
+  /**
    * Tests that you can retrieve a user from the database.
    */
   @Test
@@ -372,6 +428,58 @@ public class AccountManagementServiceTest extends ServicesBaseComponent {
 
     //Update the users.
     assertThat(accountManagementService.updateUser(user2))
+        .isFalse();
+  }
+
+  /**
+   * Tests that a user cannot be updated if the username is too small.
+   */
+  @Test
+  public void testUpdateUser_UsernameTooSmall() {
+    //Create the users.
+    UserId userId = getOrCreateUserId();
+    User user = createLocalUser(userId, "1234", "myPassword");
+
+    assertThat(accountManagementService.updateUser(user))
+        .isFalse();
+  }
+
+  /**
+   * Tests that a user cannot be updated if the password is too small.
+   */
+  @Test
+  public void testUpdateUser_PasswordTooSmall() {
+    //Create the user.
+    UserId userId = getOrCreateUserId();
+    User user = createLocalUser(userId, "myUsername", "1234");
+
+    assertThat(accountManagementService.updateUser(user))
+        .isFalse();
+  }
+
+  /**
+   * Tests that a user cannot be updated if the username is too big.
+   */
+  @Test
+  public void testUpdateUser_UsernameTooBig() {
+    //Create the user.
+    UserId userId = getOrCreateUserId();
+    User user = createLocalUser(userId, "123456789012345678901234567890123456789012345678901", "myPassword");
+
+    assertThat(accountManagementService.updateUser(user))
+        .isFalse();
+  }
+
+  /**
+   * Tests that a user cannot be updated if the password is too big.
+   */
+  @Test
+  public void testUpdateUser_PasswordTooBig() {
+    //Create the user.
+    UserId userId = getOrCreateUserId();
+    User user = createLocalUser(userId, "myUsername", "12345678901234567890123456789012345678901234567890123456789012345");
+
+    assertThat(accountManagementService.updateUser(user))
         .isFalse();
   }
 
