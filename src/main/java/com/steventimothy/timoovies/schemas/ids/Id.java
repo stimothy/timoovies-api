@@ -8,6 +8,7 @@ public interface Id {
 
   /**
    * Gets the encoded string of the id.
+   *
    * @return The encoded string of the raw id.
    */
   default String getEncodedValue() {
@@ -16,6 +17,7 @@ public interface Id {
 
   /**
    * Sets the rawId of the object by the encodedValue.
+   *
    * @param encodedValue The encoded value to set the rawId with.
    * @throws IllegalArgumentException throws if the encodedValue could not be converted into instance of the class.
    */

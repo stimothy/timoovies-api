@@ -1,8 +1,8 @@
 package com.steventimothy.timoovies.utils.users;
 
 import com.steventimothy.timoovies.repository.schemas.DataUser;
-import com.steventimothy.timoovies.schemas.users.User;
 import com.steventimothy.timoovies.schemas.ids.UserId;
+import com.steventimothy.timoovies.schemas.users.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

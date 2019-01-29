@@ -7,9 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class ServicesBaseComponent extends AmsBaseComponent {
 
+  /**
+   * The service class for ams.
+   */
   @Autowired
   protected AccountManagementService accountManagementService;
 
+  /**
+   * Adds a user to the database
+   *
+   * @param user The user to create in the database.
+   * @return The userId of the user created, or an empty userId if it wasn't.
+   */
   @Override
   protected UserId createUser(User user) {
     cleanUpCache.add(user.userId());

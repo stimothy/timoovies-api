@@ -3,7 +3,6 @@ package com.steventimothy.timoovies.schemas.ids;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 import java.util.UUID;
@@ -25,6 +24,7 @@ public class SessionId implements Id {
 
   /**
    * Gets the encoded id value.
+   *
    * @return The encoded value of the raw id.
    */
   @Override
@@ -34,6 +34,7 @@ public class SessionId implements Id {
 
   /**
    * Sets the rawId of the class given an encoded value.
+   *
    * @param encodedValue The encoded value to set the rawId with.
    * @throws IllegalArgumentException throws if the encodedValue can not be changed into instance of this class.
    */
@@ -53,6 +54,7 @@ public class SessionId implements Id {
 
   /**
    * Gets a printable friendly string of the class.
+   *
    * @return A string representation of the object.
    */
   @Override
@@ -62,6 +64,7 @@ public class SessionId implements Id {
 
   /**
    * Creates a sessionId by encodedValue.
+   *
    * @param encodedValue The encoded value of the id.
    * @throws IllegalArgumentException Throws if the encoded value cannot be converted into instance of this class.
    */

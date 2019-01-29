@@ -120,23 +120,33 @@ public class UserValidator {
     }
   }
 
+  /**
+   * Validates that the username is not null and is the right length.
+   *
+   * @param username The username to validate.
+   * @return True if it was valid, false otherwise.
+   */
   private boolean validUsername(String username) {
     if (username != null && username.length() > 4 && username.length() < 51) {
       return true;
     }
-    else
-    {
+    else {
       log.warn("Username cannot be null and must be between 5 and 50 characters.");
       return false;
     }
   }
 
+  /**
+   * Validates that the password is not null and is the right length.
+   *
+   * @param password The password to validate.
+   * @return True if it was valid, false otherwise.
+   */
   private boolean validPassword(String password) {
     if (password != null && password.length() > 4 && password.length() < 65) {
       return true;
     }
-    else
-    {
+    else {
       log.warn("Password cannot be null and must be between 5 and 64 characters.");
       return false;
     }
