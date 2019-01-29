@@ -59,8 +59,57 @@ public class AccountManagementService {
       return usersDataService.getUser(userId);
     }
     else {
-      log.warn("The userId cannot be null.");
       return null;
+    }
+  }
+
+  /**
+   * Gets a username by id.
+   *
+   * @param userId The id of the username to get.
+   * @return The username that is associated with that Id or null if it wasn't found.
+   */
+  public String getUsername(UserId userId) {
+    if (userId.getEncodedValue() != null) {
+      log.info("Attempting to retrieve the username associated with userId: {}", userId);
+      return usersDataService.getUsername(userId);
+    }
+    else {
+      return null;
+    }
+  }
+
+  /**
+   * Gets a userId by username.
+   *
+   * @param username The username of the userId to get.
+   * @return The userId that is associated with the username or an empty userId if it wasn't found.
+   */
+  public UserId getUserId(String username) {
+    if (username != null) {
+      log.info("Attempting to retrieve the userId associated with username: {}", username);
+      return usersDataService.getUserId(username);
+    }
+    else {
+      return new UserId();
+    }
+  }
+
+  /**
+   * Updates a user in the database.
+   *
+   * @param user The updated user.
+   * @return True if it was successful, false otherwise.
+   */
+  public Boolean updateUser(User user) {
+    if (userValidator.validateUpdateUser(user)) {
+      log.info("Attempting to update a user with: {}", user);
+
+      return usersDataService.updateUser(user);
+    }
+    else {
+      log.warn("The user did not contain the correct information to update. user: {}", user);
+      return false;
     }
   }
 
@@ -77,6 +126,23 @@ public class AccountManagementService {
     }
     else {
       log.warn("The userId cannot be null.");
+      return false;
+    }
+  }
+
+  /**
+   * Delete a user by username.
+   *
+   * @param username The username of the user to delete.
+   * @return True if successful, false otherwise.
+   */
+  public Boolean deleteUserByUsername(String username) {
+    if (username != null) {
+      log.info("Attempting to delete the user by username: {}", username);
+      return usersDataService.deleteUser(username);
+    }
+    else {
+      log.warn("The username cannot be null.");
       return false;
     }
   }

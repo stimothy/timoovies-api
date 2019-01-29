@@ -70,6 +70,64 @@ public class UsersDataService {
   }
 
   /**
+   * Gets a username by id.
+   *
+   * @param userId The id of the user to get its username.
+   * @return The username that matches that id, or null if it wasn't found.
+   */
+  public String getUsername(UserId userId) {
+    String username = usersDbService.getUsername(userId.rawId());
+
+    if (username == null) {
+      log.warn("The username did not exist in the database with userId: {}", userId);
+      return null;
+    }
+    else {
+      log.info("The username retrieved: {}", username);
+      return username;
+    }
+  }
+
+  /**
+   * Gets a userId by username.
+   *
+   * @param username The username of the user to get its userId.
+   * @return The userId that matches that username, or an empty userId if it wasn't found.
+   */
+  public UserId getUserId(String username) {
+    UserId userId = new UserId()
+        .rawId(usersDbService.getUserId(username));
+
+    if (userId.getEncodedValue() == null) {
+      log.warn("The userId did not exist in the database with username: {}", username);
+      return userId;
+    }
+    else {
+      log.info("The userId retrieved: {}", userId);
+      return userId;
+    }
+  }
+
+  /**
+   * Updates a user in the database.
+   *
+   * @param user The updated user.
+   * @return True if it was successful, false otherwise.
+   */
+  public Boolean updateUser(User user) {
+    DataUser dataUser = userMapper.map(user);
+
+    if (!usersDbService.update(dataUser)) {
+      log.warn("A user was not updated in the database with. user: {}", user);
+      return false;
+    }
+    else {
+      log.info("The user was updated successfully. user: {}", user);
+      return true;
+    }
+  }
+
+  /**
    * Deletes a user by id
    *
    * @param userId The id of the user to delete.
@@ -78,6 +136,23 @@ public class UsersDataService {
   public Boolean deleteUser(UserId userId) {
     if (!usersDbService.delete(userId.rawId())) {
       log.warn("The user could not be deleted with userId: {}", userId);
+      return false;
+    }
+    else {
+      log.info("The user was deleted");
+      return true;
+    }
+  }
+
+  /**
+   * Deletes a user by username
+   *
+   * @param username The username of the user to delete.
+   * @return True if it was successful, false otherwise.
+   */
+  public Boolean deleteUser(String username) {
+    if (!usersDbService.delete(username)) {
+      log.warn("The user could not be deleted with username: {}", username);
       return false;
     }
     else {

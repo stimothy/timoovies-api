@@ -108,6 +108,107 @@ class UsersDbService extends TimooviesDbService {
   }
 
   /**
+   * Get a username by id.
+   *
+   * @param id The id of the username to retrieve.
+   * @return The username retrieved by id, or null if it could not be found.
+   */
+  String getUsername(Long id) {
+    String username = null;
+
+    //Open a connection with the database.
+    Connection connection = openConnection();
+
+    try {
+      //Get the username with the id.
+      PreparedStatement preparedStatement = connection.prepareStatement("SELECT u.username FROM " + dbConfig.getTableName() + " u WHERE u.id = ?");
+      preparedStatement.setLong(1, id);
+
+      //Execute the statement
+      ResultSet resultSet = preparedStatement.executeQuery();
+
+      //Get the username.
+      if (resultSet.next()) {
+        username = resultSet.getString("username");
+      }
+    }
+    catch (SQLException ex) {
+      log.error("The username could not be retrieved from the database by id.", ex);
+    }
+
+    //Close the connection.
+    closeConnection(connection);
+
+    return username;
+  }
+
+  /**
+   * Get an id by username.
+   *
+   * @param username The username of the id to retrieve.
+   * @return The id retrieved by username, or null if it could not be found.
+   */
+  Long getUserId(String username) {
+    Long id = null;
+
+    //Open a connection with the database.
+    Connection connection = openConnection();
+
+    try {
+      //Get the id with the username.
+      PreparedStatement preparedStatement = connection.prepareStatement("SELECT u.id FROM " + dbConfig.getTableName() + " u WHERE u.username = ?");
+      preparedStatement.setString(1, username);
+
+      //Execute the statement
+      ResultSet resultSet = preparedStatement.executeQuery();
+
+      //Get the id.
+      if (resultSet.next()) {
+        id = resultSet.getLong("id");
+      }
+    }
+    catch (SQLException ex) {
+      log.error("The id could not be retrieved from the database by username.", ex);
+    }
+
+    //Close the connection.
+    closeConnection(connection);
+
+    return id;
+  }
+
+  /**
+   * Updates a user in the database.
+   *
+   * @param dataUser The updated dataUser other than the last modified field.
+   * @return True if it was successful, false otherwise.
+   */
+  Boolean update(DataUser dataUser) {
+    int affectedRows = 0;
+    dataUser.last_modified(Instant.now());
+
+    Connection connection = openConnection();
+
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement("UPDATE users SET username = ?, enc_password = ?, last_modified = ? WHERE id = ?");
+      preparedStatement.setString(1, dataUser.username());
+      preparedStatement.setString(2, dataUser.enc_password());
+      preparedStatement.setTimestamp(3, Timestamp.from(dataUser.last_modified()));
+      preparedStatement.setLong(4, dataUser.id());
+
+
+      affectedRows = preparedStatement.executeUpdate();
+    }
+    catch (SQLException ex) {
+      log.error("The user could not be updated.", ex);
+    }
+
+    closeConnection(connection);
+
+    return (affectedRows > 0);
+  }
+
+  /**
    * Deletes a user by id.
    *
    * @param id The id of the user to delete.
@@ -126,6 +227,32 @@ class UsersDbService extends TimooviesDbService {
     }
     catch (SQLException ex) {
       log.error("The user could not be deleted from the database by id.", ex);
+    }
+
+    closeConnection(connection);
+
+    return (affectedRows > 0);
+  }
+
+  /**
+   * Deletes a user by username.
+   *
+   * @param username The username of the user to delete.
+   * @return True if it was successful, false otherwise.
+   */
+  Boolean delete(String username) {
+    int affectedRows = 0;
+
+    Connection connection = openConnection();
+
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM " + dbConfig.getTableName() + " WHERE username = ?");
+      preparedStatement.setString(1, username);
+
+      affectedRows = preparedStatement.executeUpdate();
+    }
+    catch (SQLException ex) {
+      log.error("The user could not be deleted from the database by username.", ex);
     }
 
     closeConnection(connection);

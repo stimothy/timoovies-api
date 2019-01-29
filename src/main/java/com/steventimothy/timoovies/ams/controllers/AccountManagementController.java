@@ -56,7 +56,7 @@ public class AccountManagementController {
   @GetMapping(value = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity getUserById(@PathVariable(value = "id") String id) {
     log.info("GET: /ams/user/{id} - id=", id);
-    UserId userId = new UserId(id);
+    UserId userId = mapPathVariableToUserId(id);
 
     User user = accountManagementService.getUserById(userId);
 
@@ -71,6 +71,71 @@ public class AccountManagementController {
   }
 
   /**
+   * Gets a username by id from the database.
+   *
+   * @param id The id of the user to retrieve.
+   * @return returns the username associated with that id if it exists, 400 if not.
+   */
+  @GetMapping(value = "/username/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity getUsername(@PathVariable(value = "id") String id) {
+    log.info("GET: /ams/username/{id} - id=", id);
+    UserId userId = mapPathVariableToUserId(id);
+
+    String username = accountManagementService.getUsername(userId);
+
+    if (username != null) {
+      log.info("GET: /ams/username/{id} - Response: username={}", username);
+      return ResponseEntity.ok(username);
+    }
+    else {
+      log.warn("GET: /ams/username/{id} - Could not retrieve the username by id: {}", userId);
+      return ResponseEntity.badRequest().build();
+    }
+  }
+
+  /**
+   * Gets a userId by username from the database.
+   *
+   * @param username The username of the userId to retrieve.
+   * @return returns the userId associated with the username if it exists, 400 if not.
+   */
+  @GetMapping(value = "/id/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity getUserId(@PathVariable(value = "username") String username) {
+    log.info("GET: /ams/id/{username} - username=", username);
+
+    UserId userId = accountManagementService.getUserId(username);
+
+    if (userId.getEncodedValue() != null) {
+      log.info("GET: /ams/id/{username} - Response: userId={}", userId);
+      return ResponseEntity.ok(userId);
+    }
+    else {
+      log.warn("GET: /ams/id/{username} - Could not retrieve the userId by username: {}", username);
+      return ResponseEntity.badRequest().build();
+    }
+  }
+
+  /**
+   * Updates a user in the system.
+   *
+   * @param user The updated user.
+   * @return Ok if successful, bad request otherwise.
+   */
+  @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity updateUser(@RequestBody User user) {
+    log.info("PUT: /ams - Body: user={}", user);
+
+    if (accountManagementService.updateUser(user)) {
+      log.info("PUT: /ams - Successful");
+      return ResponseEntity.ok().build();
+    }
+    else {
+      log.warn("PUT: /ams - Could not update the user: {}", user);
+      return ResponseEntity.badRequest().build();
+    }
+  }
+
+  /**
    * Deletes a user given a specific id.
    *
    * @param id the id of the user to delete.
@@ -79,7 +144,7 @@ public class AccountManagementController {
   @DeleteMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity deleteUserById(@PathVariable(value = "id") String id) {
     log.info("DELETE: /ams/id/{id} - id=", id);
-    UserId userId = new UserId(id);
+    UserId userId = mapPathVariableToUserId(id);
 
     if (accountManagementService.deleteUserById(userId)) {
       log.info("DELETE: /ams/id/{id} - successful");
@@ -90,27 +155,43 @@ public class AccountManagementController {
       return ResponseEntity.badRequest().build();
     }
   }
+
+  /**
+   * Deletes a user given a specific username.
+   *
+   * @param username the username of the user to delete.
+   * @return Ok if it was successful, bad request otherwise.
+   */
+  @DeleteMapping(value = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity deleteUserByUsername(@PathVariable(value = "username") String username) {
+    log.info("DELETE: /ams/username/{username} - username=", username);
+
+    if (accountManagementService.deleteUserByUsername(username)) {
+      log.info("DELETE: /ams/username/{username} - successful");
+      return ResponseEntity.ok().build();
+    }
+    else {
+      log.warn("DELETE: /ams/username/{username} - Could not delete user by username: {}", username);
+      return ResponseEntity.badRequest().build();
+    }
+  }
+
+  /**
+   * Maps the id from the path to a UserId.
+   * @param id the id from the path.
+   * @return The userId containing the id from the path, or a userId with null.
+   */
+  private UserId mapPathVariableToUserId(String id) {
+    try {
+      return new UserId(id);
+    }
+    catch (IllegalArgumentException ex) {
+      log.error("Could not convert path variable to id: {}", id);
+      return new UserId();
+    }
+  }
 //
-//  /**
-//   * Gets a user by id from the database.
-//   *
-//   * @param id The id of the user to retrieve.
-//   * @return returns the user associated with that id if it exists, 400 if not.
-//   */
-//  @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-//  public ResponseEntity getUserById(@PathVariable(value = "id") Integer id) {
-//    log.info("GET: /ams/id/{id} - id=", id);
-//    User user = accountManagementService.getUser(id);
-//
-//    if (user != null) {
-//      log.info("GET: /ams/id/{id} - Response: user={}", user);
-//      return ResponseEntity.ok(user);
-//    }
-//    else {
-//      log.warn("GET: /ams/id/{id} - Could not retrieve the user by id: {}", id);
-//      return ResponseEntity.badRequest().build();
-//    }
-//  }
+
 //
 //  /**
 //   * Gets a user by username from the database.
