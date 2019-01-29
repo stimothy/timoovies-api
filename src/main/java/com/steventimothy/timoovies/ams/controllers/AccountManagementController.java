@@ -35,11 +35,11 @@ public class AccountManagementController {
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity createUser(@RequestBody User user) {
     log.info("POST: /ams - Body: user={}", user);
-    UserId id = accountManagementService.createUser(user);
+    UserId userId = accountManagementService.createUser(user);
 
-    if (id != null) {
-      log.info("POST: /ams - Response: id={}", id);
-      return ResponseEntity.ok(id);
+    if (userId.getEncodedValue() != null) {
+      log.info("POST: /ams - Response: id={}", userId);
+      return ResponseEntity.ok(userId);
     }
     else {
       log.warn("POST: /ams - Could not create the user: {}", user);

@@ -36,13 +36,13 @@ public class UsersDataService {
    */
   public UserId createUser(User user) {
     DataUser dataUser = userMapper.map(user);
-    Long id = usersDbService.insert(dataUser);
 
-    UserId userId = (id == null) ? null : new UserId().rawId(id);
+    UserId userId = new UserId()
+        .rawId(usersDbService.insert(dataUser));
 
-    if (userId == null) {
+    if (userId.getEncodedValue() == null) {
       log.warn("The user was not created in the database. user: {}", user);
-      return null;
+      return userId;
     }
     else {
       log.info("The user was created successfully. user: {}, userId: {}", user, userId);

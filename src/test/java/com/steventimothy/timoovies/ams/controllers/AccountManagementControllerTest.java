@@ -28,9 +28,6 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
 
     assertThat(user)
         .isEqualToIgnoringGivenFields(user2, "password");
-
-    //Clean up.
-    deleteUserById(userId);
   }
 
   /**
@@ -40,7 +37,7 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
   public void testCreateUser_DuplicatePasswords() {
     //Create the users.
     User user = createLocalUser();
-    UserId userId = createUser(user);
+    createUser(user);
 
     User user2 = createAltLocalUser();
     user2.password(user.password());
@@ -51,14 +48,10 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
 
     assertThat(user2)
         .isEqualToIgnoringGivenFields(user3, "password");
-
-    //Clean up.
-    deleteUserById(userId);
-    deleteUserById(userId2);
   }
 
   /**
-   * Tests that a user can be created with an id of zero.
+   * Tests that a user cannot be created with an id of zero.
    */
   @Test
   public void testCreateUser_IdZero() {
@@ -68,12 +61,6 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
     ResponseEntity<UserId> responseEntity = requestCreateUser(user);
 
     assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-
-    //Clean up
-    ResponseEntity responseEntity2 = requestGetUserById(user.userId());
-    if (HttpStatus.OK.equals(responseEntity2.getStatusCode())) {
-      deleteUserById(user.userId());
-    }
   }
 
   /**
@@ -87,12 +74,6 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
     ResponseEntity<UserId> responseEntity = requestCreateUser(user);
 
     assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-
-    //Clean up
-    ResponseEntity responseEntity2 = requestGetUserById(user.userId());
-    if (HttpStatus.OK.equals(responseEntity2.getStatusCode())) {
-      deleteUserById(user.userId());
-    }
   }
 
   /**
@@ -106,12 +87,6 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
     ResponseEntity<UserId> responseEntity = requestCreateUser(user);
 
     assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-
-    //Clean up
-    ResponseEntity responseEntity2 = requestGetUserById(user.userId());
-    if (HttpStatus.OK.equals(responseEntity2.getStatusCode())) {
-      deleteUserById(user.userId());
-    }
   }
 
   /**
@@ -125,12 +100,6 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
     ResponseEntity<UserId> responseEntity = requestCreateUser(user);
 
     assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-
-    //Clean up
-    ResponseEntity responseEntity2 = requestGetUserById(user.userId());
-    if (HttpStatus.OK.equals(responseEntity2.getStatusCode())) {
-      deleteUserById(user.userId());
-    }
   }
 
   /**
@@ -154,7 +123,7 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
   public void testCreateUser_IdenticalUsernames() {
     //Create the users.
     User user = createLocalUser();
-    UserId userId = createUser(user);
+    createUser(user);
 
     User user2 = createAltLocalUser();
     user2.username(user.username());
@@ -162,12 +131,6 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
     ResponseEntity<UserId> responseEntity = requestCreateUser(user2);
 
     assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-
-    //Clean up.
-    deleteUserById(userId);
-    if (HttpStatus.OK.equals(responseEntity.getStatusCode())) {
-      deleteUserById(responseEntity.getBody());
-    }
   }
 
   /**
@@ -184,9 +147,6 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
 
     assertThat(user2)
         .isEqualToIgnoringGivenFields(user, "password");
-
-    //Clean up.
-    deleteUserById(userId);
   }
 
   /**
@@ -239,9 +199,6 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
 
     assertThat(username)
         .isEqualTo(user.username());
-
-    //Clean up.
-    deleteUserById(userId);
   }
 
   /**
@@ -293,9 +250,6 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
 
     assertThat(userId2)
         .isEqualTo(userId);
-
-    //Clean up.
-    deleteUserById(userId);
   }
 
   /**
@@ -303,10 +257,10 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
    */
   @Test
   public void testGetUserId_UsernameNotInDB() {
-    String username = "myFakeUserName";
-    requestDeleteByUsername(username);
+    User user = createLocalUser();
+    requestDeleteByUsername(user.username());
 
-    ResponseEntity<UserId> responseEntity = requestGetUserId(username);
+    ResponseEntity<UserId> responseEntity = requestGetUserId(user.username());
     assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
   }
 
@@ -363,19 +317,15 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
   public void testUpdateUser_DuplicatePasswords() {
     //Create the users.
     User user = createLocalUser();
-    UserId userId = createUser(user);
+    createUser(user);
     User user2 = createAltLocalUser();
-    UserId userId2 = createUser(user2);
+    createUser(user2);
 
     //Update the user.
     user2.password(user.password());
     ResponseEntity responseEntity = requestUpdateUser(user2);
 
     assertStatus(responseEntity, HttpStatus.OK);
-
-    //Clean up.
-    deleteUserById(userId);
-    deleteUserById(userId2);
   }
 
   /**
@@ -419,7 +369,7 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
   public void testUpdateUser_IdenticalUsernames() {
     //Create the users.
     User user = createLocalUser();
-    UserId userId = createUser(user);
+    createUser(user);
     UserId userId2 = getOrCreateAltUserId();
 
     //Create alternate user.
@@ -431,10 +381,6 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
     ResponseEntity responseEntity = requestUpdateUser(user2);
 
     assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-
-    //Clean up.
-    deleteUserById(userId);
-    deleteUserById(userId2);
   }
 
   /**

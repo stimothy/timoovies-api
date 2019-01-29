@@ -4,12 +4,14 @@ import com.steventimothy.timoovies.BaseComponent;
 import com.steventimothy.timoovies.schemas.ids.UserId;
 import com.steventimothy.timoovies.schemas.users.User;
 import org.junit.After;
-import org.junit.Before;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,17 +25,13 @@ public abstract class AmsBaseComponent extends BaseComponent {
    * The userId of an alternate test user.
    */
   private UserId altUserId;
+  /**
+   * The cache of userIds needing to be clean up.
+   */
+  protected List<UserId> cleanUpCache = new ArrayList<>();
 
   /**
    * Clean up the state before starting the test.
-   */
-  @Before
-  public void setup() {
-    cleanUp();
-  }
-
-  /**
-   * Clean up the state before finishing the test.
    */
   @After
   public void tearDown() {
@@ -55,6 +53,9 @@ public abstract class AmsBaseComponent extends BaseComponent {
           .username("testUser1")
           .password("hiPPos3atGr@ss"));
 
+      assertThat(userId.getEncodedValue())
+          .isNotNull();
+
       return userId;
     }
   }
@@ -74,6 +75,10 @@ public abstract class AmsBaseComponent extends BaseComponent {
           .username("testUser2")
           .password("w0rmSEatD!rt"));
 
+      assertThat(altUserId.getEncodedValue())
+          .isNotNull();
+      cleanUpCache.add(altUserId);
+
       return altUserId;
     }
   }
@@ -88,8 +93,6 @@ public abstract class AmsBaseComponent extends BaseComponent {
     ResponseEntity<UserId> responseEntity = requestCreateUser(user);
 
     assertStatus(responseEntity, HttpStatus.OK);
-    assertThat(responseEntity.getBody())
-        .isNotNull();
     assertThat(responseEntity.getBody().getEncodedValue())
         .isNotNull();
 
@@ -103,6 +106,7 @@ public abstract class AmsBaseComponent extends BaseComponent {
    * @return The response from the rest call to create a user.
    */
   protected ResponseEntity<UserId> requestCreateUser(User user) {
+    cleanUpCache.add(user.userId());
     return this.restTemplate.exchange(RequestEntity.post(UriComponentsBuilder.fromUriString(getAmsPath())
         .build().toUri())
         .accept(MediaType.APPLICATION_JSON)
@@ -277,14 +281,16 @@ public abstract class AmsBaseComponent extends BaseComponent {
    * Cleans up the users in the database and sets their ids to null.
    */
   private void cleanUp() {
-    try {
-      requestDeleteUserById(userId);
-      requestDeleteUserById(altUserId);
-    }
-    catch (Exception ex) {
-      //Noop.
+    for (UserId delUserId : cleanUpCache) {
+      try {
+        requestDeleteUserById(delUserId);
+      }
+      catch (Exception ex) {
+        //Noop.
+      }
     }
 
+    cleanUpCache.clear();
     userId = null;
     altUserId = null;
   }

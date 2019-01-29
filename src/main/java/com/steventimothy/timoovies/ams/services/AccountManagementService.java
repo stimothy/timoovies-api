@@ -43,7 +43,7 @@ public class AccountManagementService {
     }
     else {
       log.warn("The user did not contain the correct information to create. user: {}", user);
-      return null;
+      return new UserId();
     }
   }
 
@@ -104,7 +104,6 @@ public class AccountManagementService {
   public Boolean updateUser(User user) {
     if (userValidator.validateUpdateUser(user)) {
       log.info("Attempting to update a user with: {}", user);
-
       return usersDataService.updateUser(user);
     }
     else {

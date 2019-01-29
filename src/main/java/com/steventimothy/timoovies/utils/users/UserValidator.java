@@ -112,7 +112,7 @@ public class UserValidator {
    * @return True if valid, false otherwise.
    */
   private boolean validUsernamePassword(String username, String password) {
-    if (username != null && password != null) {
+    if (username != null && password != null && username.length() > 4 && password.length() > 4) {
       return true;
     }
     else {
