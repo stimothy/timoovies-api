@@ -178,6 +178,7 @@ public class AccountManagementController {
 
   /**
    * Maps the id from the path to a UserId.
+   *
    * @param id the id from the path.
    * @return The userId containing the id from the path, or a userId with null.
    */
@@ -190,69 +191,4 @@ public class AccountManagementController {
       return new UserId();
     }
   }
-//
-
-//
-//  /**
-//   * Gets a user by username from the database.
-//   *
-//   * @param username The username of the user to retrieve.
-//   * @return returns the user associated with that username if it exists, 400 if not.
-//   */
-//  @GetMapping(value = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-//  public ResponseEntity getUserById(@PathVariable(value = "username") String username) {
-//    log.info("GET: /ams/username/{username} - username=", username);
-//    User user = accountManagementService.getUser(username);
-//
-//    if (user != null) {
-//      log.info("GET: /ams/username/{username} - Response: user={}", user);
-//      return ResponseEntity.ok(user);
-//    }
-//    else {
-//      log.warn("GET: /ams/username/{username} - Could not retrieve the user by username: {}", username);
-//      return ResponseEntity.badRequest().build();
-//    }
-//  }
-//
-//  /**
-//   * Updates a user in the system.
-//   *
-//   * @param user The user to create.
-//   * @return Ok if successful, bad request otherwise.
-//   */
-//  @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//  public ResponseEntity updateUser(@RequestBody User user) {
-//    log.info("PUT: /ams - Body: user={}", user);
-//
-//    if (accountManagementService.updateUser(user)) {
-//      log.info("PUT: /ams - Successful");
-//      return ResponseEntity.ok().build();
-//    }
-//    else {
-//      log.warn("PUT: /ams - Could not update the user: {}", user);
-//      return ResponseEntity.badRequest().build();
-//    }
-//  }
-//
-
-//
-//  /**
-//   * Deletes a user given a specific username.
-//   *
-//   * @param username the username of the user to delete.
-//   * @return Ok if it was successful, false otherwise.
-//   */
-//  @DeleteMapping(value = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-//  public ResponseEntity deleteUserById(@PathVariable(value = "username") String username) {
-//    log.info("DELETE: /ams/username/{username} - username=", username);
-//
-//    if (accountManagementService.deleteUser(username)) {
-//      log.info("DELETE: /ams/username/{username} - successful");
-//      return ResponseEntity.ok().build();
-//    }
-//    else {
-//      log.warn("DELETE: /ams/username/{username} - Could not delete user by username: {}", username);
-//      return ResponseEntity.badRequest().build();
-//    }
-//  }
 }

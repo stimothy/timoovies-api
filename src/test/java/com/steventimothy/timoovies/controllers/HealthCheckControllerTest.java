@@ -1,6 +1,5 @@
 package com.steventimothy.timoovies.controllers;
 
-import com.steventimothy.timoovies.BaseComponent;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;

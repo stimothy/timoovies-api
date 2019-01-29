@@ -204,6 +204,30 @@ public abstract class ControllersBaseComponent extends AmsBaseComponent {
   }
 
   /**
+   * Updates a user in the database.
+   *
+   * @param user The updated user.
+   */
+  protected void updateUser(User user) {
+    ResponseEntity responseEntity = requestUpdateUser(user);
+    assertStatus(responseEntity, HttpStatus.OK);
+  }
+
+  /**
+   * Updates a user in the database.
+   *
+   * @param user The updated user.
+   * @return The response of the rest call to update a user.
+   */
+  protected ResponseEntity requestUpdateUser(User user) {
+    return this.restTemplate.exchange(RequestEntity.put(UriComponentsBuilder.fromUriString(getAmsPath())
+        .build().toUri())
+        .accept(MediaType.APPLICATION_JSON)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(user), String.class);
+  }
+
+  /**
    * Deletes a user by id.
    *
    * @param userId The id of the user to delete.
@@ -221,6 +245,29 @@ public abstract class ControllersBaseComponent extends AmsBaseComponent {
    */
   protected ResponseEntity requestDeleteUserById(UserId userId) {
     return this.restTemplate.exchange(RequestEntity.delete(UriComponentsBuilder.fromUriString(getAmsPath() + "/id/" + userId.getEncodedValue())
+        .build().toUri())
+        .accept(MediaType.APPLICATION_JSON)
+        .build(), String.class);
+  }
+
+  /**
+   * Deletes a user by username.
+   *
+   * @param username The username of the user to delete.
+   */
+  protected void deleteByUsername(String username) {
+    ResponseEntity responseEntity = requestDeleteByUsername(username);
+    assertStatus(responseEntity, HttpStatus.OK);
+  }
+
+  /**
+   * Deletes a user by username.
+   *
+   * @param username The username of the user to delete.
+   * @return The response of the rest call to delete a user by username.
+   */
+  protected ResponseEntity requestDeleteByUsername(String username) {
+    return this.restTemplate.exchange(RequestEntity.delete(UriComponentsBuilder.fromUriString(getAmsPath() + "/username/" + username)
         .build().toUri())
         .accept(MediaType.APPLICATION_JSON)
         .build(), String.class);

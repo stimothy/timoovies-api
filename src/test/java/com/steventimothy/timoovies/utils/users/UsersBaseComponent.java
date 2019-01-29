@@ -1,7 +1,6 @@
 package com.steventimothy.timoovies.utils.users;
 
 import com.steventimothy.timoovies.repository.schemas.DataUser;
-import com.steventimothy.timoovies.schemas.users.User;
 import com.steventimothy.timoovies.utils.UtilsBaseComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,6 +23,7 @@ public abstract class UsersBaseComponent extends UtilsBaseComponent {
 
   /**
    * Creates a dataUser.
+   *
    * @return The dataUser created.
    */
   protected DataUser createDataUser() {
