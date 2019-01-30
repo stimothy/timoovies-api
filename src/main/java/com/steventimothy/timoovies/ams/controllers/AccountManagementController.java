@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * <h1>The AmsHealthCheckController Class</h1>
+ * <h1>The AccountManagementController Class</h1>
  * <p>This class holds the endpoints used in the AMS.</p>
  */
 @Slf4j

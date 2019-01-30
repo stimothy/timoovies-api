@@ -323,6 +323,15 @@ public abstract class BaseComponent {
   }
 
   /**
+   * Returns the uas base path.
+   *
+   * @return The uas path.
+   */
+  protected String getUasPath() {
+    return "/uas";
+  }
+
+  /**
    * Cleans up the users in the database and sets their ids to null.
    */
   private void cleanUp() {
