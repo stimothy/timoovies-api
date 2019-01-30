@@ -55,17 +55,17 @@ public class AccountManagementController {
    */
   @GetMapping(value = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity getUserById(@PathVariable(value = "id") String id) {
-    log.info("GET: /ams/user/{id} - id=", id);
+    log.info("GET: /ams/user/{} - id=", id, id);
     UserId userId = mapPathVariableToUserId(id);
 
     User user = accountManagementService.getUserById(userId);
 
     if (user != null) {
-      log.info("GET: /ams/user/{id} - Response: user={}", user);
+      log.info("GET: /ams/user/{} - Response: user={}", id, user);
       return ResponseEntity.ok(user);
     }
     else {
-      log.warn("GET: /ams/user/{id} - Could not retrieve the user by userId: {}", userId);
+      log.warn("GET: /ams/user/{} - Could not retrieve the user by userId: {}", id, userId);
       return ResponseEntity.badRequest().build();
     }
   }
@@ -78,17 +78,17 @@ public class AccountManagementController {
    */
   @GetMapping(value = "/username/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity getUsername(@PathVariable(value = "id") String id) {
-    log.info("GET: /ams/username/{id} - id=", id);
+    log.info("GET: /ams/username/{} - id=", id, id);
     UserId userId = mapPathVariableToUserId(id);
 
     String username = accountManagementService.getUsername(userId);
 
     if (username != null) {
-      log.info("GET: /ams/username/{id} - Response: username={}", username);
+      log.info("GET: /ams/username/{} - Response: username={}", id, username);
       return ResponseEntity.ok(username);
     }
     else {
-      log.warn("GET: /ams/username/{id} - Could not retrieve the username by id: {}", userId);
+      log.warn("GET: /ams/username/{} - Could not retrieve the username by id: {}", id, userId);
       return ResponseEntity.badRequest().build();
     }
   }
@@ -101,16 +101,16 @@ public class AccountManagementController {
    */
   @GetMapping(value = "/id/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity getUserId(@PathVariable(value = "username") String username) {
-    log.info("GET: /ams/id/{username} - username=", username);
+    log.info("GET: /ams/id/{} - username=", username, username);
 
     UserId userId = accountManagementService.getUserId(username);
 
     if (userId.getEncodedValue() != null) {
-      log.info("GET: /ams/id/{username} - Response: userId={}", userId);
+      log.info("GET: /ams/id/{} - Response: userId={}", username, userId);
       return ResponseEntity.ok(userId);
     }
     else {
-      log.warn("GET: /ams/id/{username} - Could not retrieve the userId by username: {}", username);
+      log.warn("GET: /ams/id/{} - Could not retrieve the userId by username: {}", username, username);
       return ResponseEntity.badRequest().build();
     }
   }
@@ -143,15 +143,15 @@ public class AccountManagementController {
    */
   @DeleteMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity deleteUserById(@PathVariable(value = "id") String id) {
-    log.info("DELETE: /ams/id/{id} - id=", id);
+    log.info("DELETE: /ams/id/{} - id=", id, id);
     UserId userId = mapPathVariableToUserId(id);
 
     if (accountManagementService.deleteUserById(userId)) {
-      log.info("DELETE: /ams/id/{id} - successful");
+      log.info("DELETE: /ams/id/{} - successful", id);
       return ResponseEntity.ok().build();
     }
     else {
-      log.warn("DELETE: /ams/id/{id} - Could not delete user by userId: {}", userId);
+      log.warn("DELETE: /ams/id/{} - Could not delete user by userId: {}", id, userId);
       return ResponseEntity.badRequest().build();
     }
   }
@@ -164,14 +164,14 @@ public class AccountManagementController {
    */
   @DeleteMapping(value = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity deleteUserByUsername(@PathVariable(value = "username") String username) {
-    log.info("DELETE: /ams/username/{username} - username=", username);
+    log.info("DELETE: /ams/username/{} - username=", username, username);
 
     if (accountManagementService.deleteUserByUsername(username)) {
-      log.info("DELETE: /ams/username/{username} - successful");
+      log.info("DELETE: /ams/username/{} - successful", username);
       return ResponseEntity.ok().build();
     }
     else {
-      log.warn("DELETE: /ams/username/{username} - Could not delete user by username: {}", username);
+      log.warn("DELETE: /ams/username/{} - Could not delete user by username: {}", username, username);
       return ResponseEntity.badRequest().build();
     }
   }
