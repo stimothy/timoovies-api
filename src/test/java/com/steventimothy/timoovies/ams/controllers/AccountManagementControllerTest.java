@@ -15,318 +15,125 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AccountManagementControllerTest extends ControllersBaseComponent {
 
   /**
-   * This tests that a user can be created and also retrieved by id.
+   * Tests that a user can be created.
    */
   @Test
   public void testCreateUser() {
-    //Create the user.
+    //Setup a user to create.
     User user = createLocalUser();
+
+    //Create the user.
     UserId userId = createUser(user);
 
     //Get the created user.
     User user2 = getUserById(userId);
-
     assertThat(user)
         .isEqualToIgnoringGivenFields(user2, "password");
   }
 
   /**
-   * This tests that a user can be created even with duplicate passwords.
+   * Tests that a 400 is returned if the user cannot be created.
    */
   @Test
-  public void testCreateUser_DuplicatePasswords() {
-    //Create the users.
-    User user = createLocalUser();
-    createUser(user);
-
-    User user2 = createAltLocalUser();
-    user2.password(user.password());
-    UserId userId2 = createUser(user2);
-
-    //Get the created user.
-    User user3 = getUserById(userId2);
-
-    assertThat(user2)
-        .isEqualToIgnoringGivenFields(user3, "password");
-  }
-
-  /**
-   * Tests that a user cannot be created with an id of zero.
-   */
-  @Test
-  public void testCreateUser_IdZero() {
-    //Create the user.
-    User user = createLocalUser();
-    user.userId().rawId(0L);
-    ResponseEntity<UserId> responseEntity = requestCreateUser(user);
-
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user cannot be created if their id is greater than 10.
-   */
-  @Test
-  public void testCreateUser_NonTestId() {
-    //Create the user.
-    User user = createLocalUser();
-    user.userId().rawId(11L);
-    ResponseEntity<UserId> responseEntity = requestCreateUser(user);
-
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user cannot be created if their username is null.
-   */
-  @Test
-  public void testCreateUser_NoUsername() {
-    //Create the user.
+  public void testCreateUser_Failed() {
+    //Setup a user to create.
     User user = createLocalUser();
     user.username(null);
-    ResponseEntity<UserId> responseEntity = requestCreateUser(user);
 
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+    //Create a user.
+    ResponseEntity createResponseEntity = requestCreateUser(user);
+    assertStatus(createResponseEntity, HttpStatus.BAD_REQUEST);
+
+    //Get the created user.
+    ResponseEntity getResponseEntity = requestGetUserById(user.userId());
+    assertStatus(getResponseEntity, HttpStatus.BAD_REQUEST);
   }
 
   /**
-   * Tests that a user cannot be created if their password is null.
-   */
-  @Test
-  public void testCreateUser_NoPassword() {
-    //Create the user.
-    User user = createLocalUser();
-    user.password(null);
-    ResponseEntity<UserId> responseEntity = requestCreateUser(user);
-
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user cannot be created with identical ids.
-   */
-  @Test
-  public void testCreateUser_IdenticalIds() {
-    //Create the users.
-    UserId userId = getOrCreateUserId();
-    User user = createLocalUser();
-    user.userId(userId);
-    ResponseEntity<UserId> responseEntity = requestCreateUser(user);
-
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user cannot be created with identical usernames.
-   */
-  @Test
-  public void testCreateUser_IdenticalUsernames() {
-    //Create the users.
-    User user = createLocalUser();
-    createUser(user);
-
-    User user2 = createAltLocalUser();
-    user2.username(user.username());
-
-    ResponseEntity<UserId> responseEntity = requestCreateUser(user2);
-
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user cannot be created if the username is too small.
-   */
-  @Test
-  public void testCreateUser_UsernameTooSmall() {
-    //Create the user.
-    User user = createLocalUser(createUserId(), "1234", "myPassword");
-
-    ResponseEntity<UserId> responseEntity = requestCreateUser(user);
-
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user cannot be created if the password is too small.
-   */
-  @Test
-  public void testCreateUser_PasswordTooSmall() {
-    //Create the user.
-    User user = createLocalUser(createUserId(), "myUsername", "1234");
-
-    ResponseEntity<UserId> responseEntity = requestCreateUser(user);
-
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user cannot be created if the username is too big.
-   */
-  @Test
-  public void testCreateUser_UsernameTooBig() {
-    //Create the user.
-    User user = createLocalUser(createUserId(), "123456789012345678901234567890123456789012345678901", "myPassword");
-
-    ResponseEntity<UserId> responseEntity = requestCreateUser(user);
-
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user cannot be created if the password is too big.
-   */
-  @Test
-  public void testCreateUser_PasswordTooBig() {
-    //Create the user.
-    User user = createLocalUser(createUserId(), "myUsername", "12345678901234567890123456789012345678901234567890123456789012345");
-
-    ResponseEntity<UserId> responseEntity = requestCreateUser(user);
-
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that you can retrieve a user from the database.
+   * Tests that a user can be retrieved from the system.
    */
   @Test
   public void testGetUser() {
-    //Create a user.
+    //Setup and create a user.
     User user = createLocalUser();
     UserId userId = createUser(user);
 
-    //Get the user.
+    //Get the created user from the system.
     User user2 = getUserById(userId);
-
     assertThat(user2)
         .isEqualToIgnoringGivenFields(user, "password");
   }
 
   /**
-   * Tests that you cannot retrieve a user from the database if its not there.
+   * Tests that a 400 is returned if the user cannot be retrieved.
    */
   @Test
-  public void testGetUser_IdNotInDB() {
-    UserId userId = createUserId();
-    requestDeleteUserById(userId);
-
-    ResponseEntity<User> responseEntity = requestGetUserById(userId);
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-
-  /**
-   * Tests that you cannot retrieve a user from the database given no id.
-   */
-  @Test
-  public void testGetUser_IdNull() {
-    ResponseEntity<User> responseEntity = requestGetUserById(new UserId());
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that you cannot retrieve a user from the database given a bad id type.
-   */
-  @Test
-  public void testGetUser_DifferentIdType() {
+  public void testGetUser_Failed() {
+    //Get a user the wrong type of id.
     SessionId sessionId = createSessionId();
     ResponseEntity<User> responseEntity = this.restTemplate.exchange(RequestEntity.get(UriComponentsBuilder.fromUriString(getAmsPath() + "/user/" + sessionId.getEncodedValue())
         .build().toUri())
         .accept(MediaType.APPLICATION_JSON)
         .build(), User.class);
-
     assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
   }
 
   /**
-   * Tests that you can retrieve a username from the database.
+   * Tests that a user can get a username given a userId.
    */
   @Test
   public void testGetUsername() {
-    //Create the user.
+    //Setup and create a user.
     User user = createLocalUser();
     UserId userId = createUser(user);
 
-    //Get the username.
+    //Get the username of the user.
     String username = getUsername(userId);
-
     assertThat(username)
         .isEqualTo(user.username());
   }
 
   /**
-   * Tests that you cannot retrieve a username from the database given its not there.
+   * Tests that a 400 is returned if the username cannot be retrieved.
    */
   @Test
-  public void testGetUsername_IdNotInDB() {
-    UserId userId = createUserId();
-    requestDeleteUserById(userId);
-
-    ResponseEntity<String> responseEntity = requestGetUsername(userId);
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that you cannot retrieve a username from the database given no id.
-   */
-  @Test
-  public void testGetUsername_IdNull() {
-    ResponseEntity<String> responseEntity = requestGetUsername(new UserId());
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that you cannot retrieve a username from the database given a bad id type.
-   */
-  @Test
-  public void testGetUsername_DifferentIdType() {
+  public void testGetUsername_Fail() {
+    //Get the username with the wrong type of id.
     SessionId sessionId = createSessionId();
-    ResponseEntity<String> responseEntity = this.restTemplate.exchange(RequestEntity.get(UriComponentsBuilder.fromUriString(getAmsPath() + "/username/" + sessionId.getEncodedValue())
+    ResponseEntity<String> responseEntity = this.restTemplate.exchange(RequestEntity.get(UriComponentsBuilder.fromUriString(getAmsPath() + "/user/" + sessionId.getEncodedValue())
         .build().toUri())
         .accept(MediaType.APPLICATION_JSON)
         .build(), String.class);
-
     assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
   }
 
   /**
-   * Tests that you can retrieve a userId from the database.
+   * Tests that a user can get a userId given a username.
    */
   @Test
   public void testGetUserId() {
-    //Create the user.
+    //Setup and create the user.
     User user = createLocalUser();
     UserId userId = createUser(user);
 
     //Get the userId.
     UserId userId2 = getUserId(user.username());
-
     assertThat(userId2)
         .isEqualTo(userId);
   }
 
   /**
-   * Tests that you cannot retrieve a userId from the database if its not there.
+   * Tests that a 400 is returned if the userId cannot be retrieved.
    */
   @Test
-  public void testGetUserId_UsernameNotInDB() {
-    User user = createLocalUser();
-    requestDeleteByUsername(user.username());
-
-    ResponseEntity<UserId> responseEntity = requestGetUserId(user.username());
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that you cannot retrieve a userId from the database given no username.
-   */
-  @Test
-  public void testGetUserId_UsernameNull() {
+  public void testGetUserId_Fail() {
+    //Get the userId.
     ResponseEntity<UserId> responseEntity = requestGetUserId(null);
     assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
   }
 
   /**
-   * Tests that a user can be updated in the database.
+   * Tests that a user can be updated given a userId.
    */
   @Test
   public void testUpdateUser() {
@@ -337,230 +144,100 @@ public class AccountManagementControllerTest extends ControllersBaseComponent {
     User user = createLocalUser();
     user.userId(userId);
 
-    updateUser(user);
+    //Update the user.
+    ResponseEntity responseEntity = requestUpdateUser(user);
+    assertStatus(responseEntity, HttpStatus.OK);
 
+    //Get the updated user.
     User user2 = getUserById(userId);
-
     assertThat(user2)
         .isEqualToIgnoringGivenFields(user, "password");
+    assertThat(user2.userId())
+        .isEqualTo(userId);
   }
 
   /**
-   * Tests that a user cannot be updated in the database if it doesn't exist.
+   * Tests that a 400 is returned if the user cannot be updated.
    */
   @Test
-  public void testUpdateUser_UserDoesNotExist() {
-    User user = createLocalUser();
-    requestDeleteUserById(user.userId());
-
+  public void testUpdateUser_Fail() {
     //Create an updated user.
-    User user2 = createAltLocalUser();
-    user2.userId(user.userId());
-
-    ResponseEntity responseEntity = requestUpdateUser(user2);
-
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * This tests that a user can be updated even with duplicate passwords.
-   */
-  @Test
-  public void testUpdateUser_DuplicatePasswords() {
-    //Create the users.
     User user = createLocalUser();
-    createUser(user);
-    User user2 = createAltLocalUser();
-    createUser(user2);
-
-    //Update the user.
-    user2.password(user.password());
-    ResponseEntity responseEntity = requestUpdateUser(user2);
-
-    assertStatus(responseEntity, HttpStatus.OK);
-  }
-
-  /**
-   * Tests that a user cannot be updated if their username is null.
-   */
-  @Test
-  public void testUpdateUser_NoUsername() {
-    //Create the user.
-    UserId userId = getOrCreateUserId();
-    User user = createLocalUser();
-    user.userId(userId);
-    user.username(null);
-
-    //Update the users.
-    ResponseEntity responseEntity = requestUpdateUser(user);
-
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user cannot be updated if their password is null.
-   */
-  @Test
-  public void testUpdateUser_NoPassword() {
-    //Create the user.
-    UserId userId = getOrCreateUserId();
-    User user = createLocalUser();
-    user.userId(userId);
-    user.password(null);
+    user.userId(null);
 
     //Update the user.
     ResponseEntity responseEntity = requestUpdateUser(user);
-
     assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
   }
 
   /**
-   * Tests that a user cannot be updated with identical usernames.
+   * Tests that a user can be deleted given a userId.
    */
   @Test
-  public void testUpdateUser_IdenticalUsernames() {
-    //Create the users.
-    User user = createLocalUser();
-    createUser(user);
-    UserId userId2 = getOrCreateAltUserId();
-
-    //Create alternate user.
-    User user2 = createAltLocalUser();
-    user2.userId(userId2);
-    user2.username(user.username());
-
-    //Update the user.
-    ResponseEntity responseEntity = requestUpdateUser(user2);
-
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user cannot be updated if the username is too small.
-   */
-  @Test
-  public void testUpdateUser_UsernameTooSmall() {
-    //Create the users.
+  public void testDeleteUserById() {
+    //Create the user to delete.
     UserId userId = getOrCreateUserId();
-    User user = createLocalUser(userId, "1234", "myPassword");
 
-    ResponseEntity responseEntity = requestUpdateUser(user);
+    //Get the created user.
+    User user = getUserById(userId);
+    assertThat(user.userId())
+        .isEqualTo(userId);
+    assertThat(user.username())
+        .isNotNull();
 
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user cannot be updated if the password is too small.
-   */
-  @Test
-  public void testUpdateUser_PasswordTooSmall() {
-    //Create the user.
-    UserId userId = getOrCreateUserId();
-    User user = createLocalUser(userId, "myUsername", "1234");
-
-    ResponseEntity responseEntity = requestUpdateUser(user);
-
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user cannot be updated if the username is too big.
-   */
-  @Test
-  public void testUpdateUser_UsernameTooBig() {
-    //Create the user.
-    UserId userId = getOrCreateUserId();
-    User user = createLocalUser(userId, "123456789012345678901234567890123456789012345678901", "myPassword");
-
-    ResponseEntity responseEntity = requestUpdateUser(user);
-
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user cannot be updated if the password is too big.
-   */
-  @Test
-  public void testUpdateUser_PasswordTooBig() {
-    //Create the user.
-    UserId userId = getOrCreateUserId();
-    User user = createLocalUser(userId, "myUsername", "12345678901234567890123456789012345678901234567890123456789012345");
-
-    ResponseEntity responseEntity = requestUpdateUser(user);
-
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user is deleted from the database by id.
-   */
-  @Test
-  public void testDeleteUser_ById() {
-    //Create and delete the user.
-    UserId userId = getOrCreateUserId();
-    deleteUserById(userId);
+    //Delete the user.
+    ResponseEntity deleteResponseEntity = requestDeleteUserById(userId);
+    assertStatus(deleteResponseEntity, HttpStatus.OK);
 
     //Try and get the deleted user.
-    ResponseEntity<User> responseEntity = requestGetUserById(userId);
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+    ResponseEntity<User> getResponseEntity = requestGetUserById(userId);
+    assertStatus(getResponseEntity, HttpStatus.BAD_REQUEST);
   }
 
   /**
-   * Tests that a user is deleted from the database by username.
+   * Tests that a 400 is returned if the user cannot be deleted.
    */
   @Test
-  public void testDeleteUser_ByUsername() {
-    //Create and delete the user.
+  public void testDeleteUserById_Fail() {
+    //Delete the user with bad type of id.
+    SessionId sessionId = createSessionId();
+    ResponseEntity deleteResponseEntity = this.restTemplate.exchange(RequestEntity.delete(UriComponentsBuilder.fromUriString(getAmsPath() + "/id/" + sessionId.getEncodedValue())
+        .build().toUri())
+        .accept(MediaType.APPLICATION_JSON)
+        .build(), String.class);
+    assertStatus(deleteResponseEntity, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Tests that a user can be deleted given a username.
+   */
+  @Test
+  public void testDeleteUserByUsername() {
+    //Create the user.
     User user = createLocalUser();
     UserId userId = createUser(user);
 
+    //Get the user.
+    User user2 = getUserById(userId);
+    assertThat(user2)
+        .isEqualToIgnoringGivenFields(user, "password");
+
     //Delete the user
-    deleteByUsername(user.username());
+    ResponseEntity deleteResponseEntity = requestDeleteByUsername(user.username());
+    assertStatus(deleteResponseEntity, HttpStatus.OK);
 
     //Try and get the deleted user.
-    ResponseEntity<User> responseEntity = requestGetUserById(userId);
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+    ResponseEntity getResponseEntity = requestGetUserById(userId);
+    assertStatus(getResponseEntity, HttpStatus.BAD_REQUEST);
   }
 
   /**
-   * Tests that a user cannot be deleted if id is null.
+   * Tests that a 400 is returned if the user cannot be deleted.
    */
   @Test
-  public void testDeleteUser_ById_NullId() {
-    ResponseEntity responseEntity = requestDeleteUserById(new UserId());
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user is deleted from the database by username.
-   */
-  @Test
-  public void testDeleteUser_ByUsername_NullUsername() {
-    ResponseEntity responseEntity = requestDeleteByUsername(null);
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user cannot be deleted if id is not there.
-   */
-  @Test
-  public void testDeleteUser_ById_NotInDB() {
-    UserId userId = createUserId();
-    requestDeleteUserById(userId);
-
-    ResponseEntity responseEntity = requestDeleteUserById(userId);
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
-  }
-
-  /**
-   * Tests that a user is deleted from the database by username.
-   */
-  @Test
-  public void testDeleteUser_ByUsername_NotInDB() {
-    User user = createLocalUser();
-    requestDeleteByUsername(user.username());
-
-    ResponseEntity responseEntity = requestDeleteByUsername(user.username());
-    assertStatus(responseEntity, HttpStatus.BAD_REQUEST);
+  public void testDeleteUserByUsername_Fail() {
+    //Delete the user
+    ResponseEntity deleteResponseEntity = requestDeleteByUsername(null);
+    assertStatus(deleteResponseEntity, HttpStatus.BAD_REQUEST);
   }
 }

@@ -242,7 +242,6 @@ public abstract class BaseComponent {
 
       assertThat(altUserId.getEncodedValue())
           .isNotNull();
-      cleanUpCache.add(altUserId);
 
       return altUserId;
     }

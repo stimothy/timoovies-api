@@ -9,206 +9,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AccountManagementServiceTest extends ServicesBaseComponent {
 
   /**
-   * This tests that a user can be created and also retrieved by id.
+   * Tests that a user can be created.
    */
   @Test
   public void testCreateUser() {
-    //Create the user.
+    //Setup the user.
     User user = createLocalUser();
+
+    //Create the user.
     UserId userId = createUser(user);
+    assertThat(userId.getEncodedValue())
+        .isNotNull();
 
     //Get the created user.
     User user2 = accountManagementService.getUserById(userId);
-
     assertThat(user)
         .isEqualToIgnoringGivenFields(user2, "password");
   }
 
   /**
-   * This tests that a user can be created even with duplicate passwords.
+   * Tests that an empty userId is returned if the user could not be created.
    */
   @Test
-  public void testCreateUser_DuplicatePasswords() {
-    //Create the users.
-    User user = createLocalUser();
-    createUser(user);
-
-    User user2 = createAltLocalUser();
-    user2.password(user.password());
-    UserId userId2 = createUser(user2);
-
-    //Get the created user.
-    User user3 = accountManagementService.getUserById(userId2);
-
-    assertThat(user2)
-        .isEqualToIgnoringGivenFields(user3, "password");
-  }
-
-  /**
-   * Tests that a user cannot be created with an id of zero.
-   */
-  @Test
-  public void testCreateUser_IdZero() {
-    //Create the user.
-    User user = createLocalUser();
-    user.userId().rawId(0L);
-    UserId userId = createUser(user);
-
-    assertThat(userId.getEncodedValue())
-        .isNull();
-
-    User user2 = accountManagementService.getUserById(user.userId());
-    assertThat(user2)
-        .isNull();
-  }
-
-  /**
-   * Tests that a user cannot be created if their id is greater than 10.
-   */
-  @Test
-  public void testCreateUser_NonTestId() {
-    //Create the user.
-    User user = createLocalUser();
-    user.userId().rawId(11L);
-    UserId userId = createUser(user);
-
-    assertThat(userId.getEncodedValue())
-        .isNull();
-
-    User user2 = accountManagementService.getUserById(user.userId());
-    assertThat(user2)
-        .isNull();
-  }
-
-  /**
-   * Tests that a user cannot be created if their username is null.
-   */
-  @Test
-  public void testCreateUser_NoUsername() {
-    //Create the user.
+  public void testCreateUser_EmptyUserId() {
+    //Setup the user.
     User user = createLocalUser();
     user.username(null);
-    UserId userId = createUser(user);
 
-    assertThat(userId.getEncodedValue())
-        .isNull();
-
-    User user2 = accountManagementService.getUserById(user.userId());
-    assertThat(user2)
-        .isNull();
-  }
-
-  /**
-   * Tests that a user cannot be created if their password is null.
-   */
-  @Test
-  public void testCreateUser_NoPassword() {
     //Create the user.
-    User user = createLocalUser();
-    user.password(null);
     UserId userId = createUser(user);
-
-    assertThat(userId.getEncodedValue())
-        .isNull();
-
-    User user2 = accountManagementService.getUserById(user.userId());
-    assertThat(user2)
-        .isNull();
-  }
-
-  /**
-   * Tests that a user cannot be created with identical ids.
-   */
-  @Test
-  public void testCreateUser_IdenticalIds() {
-    //Create the users.
-    UserId userId = getOrCreateUserId();
-    User user = createLocalUser();
-    user.userId(userId);
-    UserId userId2 = createUser(user);
-
-    assertThat(userId2.getEncodedValue())
-        .isNull();
-
-    User user2 = accountManagementService.getUserById(userId);
-    assertThat(user2)
-        .isNotNull();
-  }
-
-  /**
-   * Tests that a user cannot be created with identical usernames.
-   */
-  @Test
-  public void testCreateUser_IdenticalUsernames() {
-    //Create the users.
-    User user = createLocalUser();
-    createUser(user);
-
-    User user2 = createAltLocalUser();
-    user2.username(user.username());
-
-    UserId userId2 = createUser(user);
-
-    assertThat(userId2.getEncodedValue())
-        .isNull();
-
-    User user3 = accountManagementService.getUserById(user2.userId());
-    assertThat(user3)
-        .isNull();
-  }
-
-  /**
-   * Tests that a user cannot be created if the username is too small.
-   */
-  @Test
-  public void testCreateUser_UsernameTooSmall() {
-    //Create the user.
-    User user = createLocalUser(createUserId(), "1234", "myPassword");
-
-    UserId userId = createUser(user);
-
-    assertThat(userId.getEncodedValue())
-        .isNull();
-  }
-
-  /**
-   * Tests that a user cannot be created if the password is too small.
-   */
-  @Test
-  public void testCreateUser_PasswordTooSmall() {
-    //Create the user.
-    User user = createLocalUser(createUserId(), "myUsername", "1234");
-
-    UserId userId = createUser(user);
-
-    assertThat(userId.getEncodedValue())
-        .isNull();
-  }
-
-  /**
-   * Tests that a user cannot be created if the username is too big.
-   */
-  @Test
-  public void testCreateUser_UsernameTooBig() {
-    //Create the user.
-    User user = createLocalUser(createUserId(), "123456789012345678901234567890123456789012345678901", "myPassword");
-
-    UserId userId = createUser(user);
-
-    assertThat(userId.getEncodedValue())
-        .isNull();
-  }
-
-  /**
-   * Tests that a user cannot be created if the password is too big.
-   */
-  @Test
-  public void testCreateUser_PasswordTooBig() {
-    //Create the user.
-    User user = createLocalUser(createUserId(), "myUsername", "12345678901234567890123456789012345678901234567890123456789012345");
-
-    UserId userId = createUser(user);
-
     assertThat(userId.getEncodedValue())
         .isNull();
   }
@@ -218,36 +47,28 @@ public class AccountManagementServiceTest extends ServicesBaseComponent {
    */
   @Test
   public void testGetUser() {
-    //Create a user.
+    //Setup the user.
     User user = createLocalUser();
+
+    //Create the user.
     UserId userId = createUser(user);
+    assertThat(userId.getEncodedValue())
+        .isNotNull();
 
     //Get the user.
     User user2 = accountManagementService.getUserById(userId);
-
     assertThat(user2)
         .isEqualToIgnoringGivenFields(user, "password");
   }
 
   /**
-   * Tests that you cannot retrieve a user from the database if its not there.
+   * Tests that you get a null user if there was a problem getting the user.
    */
   @Test
-  public void testGetUser_IdNotInDB() {
-    UserId userId = createUserId();
-    accountManagementService.deleteUserById(userId);
-
-    assertThat(accountManagementService.getUserById(userId))
-        .isNull();
-  }
-
-
-  /**
-   * Tests that you cannot retrieve a user from the database given no id.
-   */
-  @Test
-  public void testGetUser_IdNull() {
-    assertThat(accountManagementService.getUserById(new UserId()))
+  public void testGetUser_NullUser() {
+    //Get the user with an empty id.
+    User user2 = accountManagementService.getUserById(new UserId());
+    assertThat(user2)
         .isNull();
   }
 
@@ -256,35 +77,28 @@ public class AccountManagementServiceTest extends ServicesBaseComponent {
    */
   @Test
   public void testGetUsername() {
-    //Create the user.
+    //Setup the user.
     User user = createLocalUser();
+
+    //Create the user.
     UserId userId = createUser(user);
+    assertThat(userId.getEncodedValue())
+        .isNotNull();
 
     //Get the username.
     String username = accountManagementService.getUsername(userId);
-
     assertThat(username)
         .isEqualTo(user.username());
   }
 
   /**
-   * Tests that you cannot retrieve a username from the database given its not there.
+   * Tests that a null username is returned if there was a problem.
    */
   @Test
-  public void testGetUsername_IdNotInDB() {
-    UserId userId = createUserId();
-    accountManagementService.deleteUserById(userId);
-
-    assertThat(accountManagementService.getUsername(userId))
-        .isNull();
-  }
-
-  /**
-   * Tests that you cannot retrieve a username from the database given no id.
-   */
-  @Test
-  public void testGetUsername_IdNull() {
-    assertThat(accountManagementService.getUserById(new UserId()))
+  public void testGetUsername_NullUsername() {
+    //Get the username given a blank userId.
+    String username = accountManagementService.getUsername(new UserId());
+    assertThat(username)
         .isNull();
   }
 
@@ -293,35 +107,28 @@ public class AccountManagementServiceTest extends ServicesBaseComponent {
    */
   @Test
   public void testGetUserId() {
-    //Create the user.
+    //Setup the user.
     User user = createLocalUser();
+
+    //Create the user.
     UserId userId = createUser(user);
+    assertThat(userId.getEncodedValue())
+        .isNotNull();
 
     //Get the userId.
     UserId userId2 = accountManagementService.getUserId(user.username());
-
     assertThat(userId2)
         .isEqualTo(userId);
   }
 
   /**
-   * Tests that you cannot retrieve a userId from the database if its not there.
+   * Tests that you get an empty userId if there was a problem.
    */
   @Test
-  public void testGetUserId_UsernameNotInDB() {
-    User user = createLocalUser();
-    accountManagementService.deleteUserByUsername(user.username());
-
-    assertThat(accountManagementService.getUserId(user.username()).getEncodedValue())
-        .isNull();
-  }
-
-  /**
-   * Tests that you cannot retrieve a userId from the database given no username.
-   */
-  @Test
-  public void testGetUserId_UsernameNull() {
-    assertThat(accountManagementService.getUserId(null).getEncodedValue())
+  public void testGetUserId_EmptyUserId() {
+    //Get the userId given a null username.
+    UserId userId2 = accountManagementService.getUserId(null);
+    assertThat(userId2.getEncodedValue())
         .isNull();
   }
 
@@ -337,188 +144,72 @@ public class AccountManagementServiceTest extends ServicesBaseComponent {
     User user = createLocalUser();
     user.userId(userId);
 
+    //Update the user.
     assertThat(accountManagementService.updateUser(user))
         .isTrue();
 
+    //Get the updated user.
     User user2 = accountManagementService.getUserById(userId);
-
     assertThat(user2)
         .isEqualToIgnoringGivenFields(user, "password");
   }
 
   /**
-   * Tests that a user cannot be updated in the database if it doesn't exist.
+   * Tests that the service returns false if it fails on an update.
    */
   @Test
-  public void testUpdateUser_UserDoesNotExist() {
+  public void testUpdateUser_Fail() {
+    //Setup a user.
     User user = createLocalUser();
-    accountManagementService.deleteUserById(user.userId());
 
-    //Create an updated user.
+    //Create the user.
+    UserId userId = createUser(user);
+    assertThat(userId.getEncodedValue())
+        .isNotNull();
+
+    //Create a different user.
     User user2 = createAltLocalUser();
-    user2.userId(user.userId());
-
-    assertThat(accountManagementService.updateUser(user2))
-        .isFalse();
-  }
-
-  /**
-   * This tests that a user can be updated even with duplicate passwords.
-   */
-  @Test
-  public void testUpdateUser_DuplicatePasswords() {
-    //Create the users.
-    User user = createLocalUser();
-    createUser(user);
-    User user2 = createAltLocalUser();
-    createUser(user2);
+    user2.username(null);
 
     //Update the user.
-    user2.password(user.password());
-    assertThat(accountManagementService.updateUser(user2))
-        .isTrue();
-  }
-
-  /**
-   * Tests that a user cannot be updated if their username is null.
-   */
-  @Test
-  public void testUpdateUser_NoUsername() {
-    //Create the user.
-    UserId userId = getOrCreateUserId();
-    User user = createLocalUser();
-    user.userId(userId);
-    user.username(null);
-
-    //Update the users.
-    assertThat(accountManagementService.updateUser(user))
-        .isFalse();
-  }
-
-  /**
-   * Tests that a user cannot be updated if their password is null.
-   */
-  @Test
-  public void testUpdateUser_NoPassword() {
-    //Create the user.
-    UserId userId = getOrCreateUserId();
-    User user = createLocalUser();
-    user.userId(userId);
-    user.password(null);
-
-    //Update the users.
-    assertThat(accountManagementService.updateUser(user))
-        .isFalse();
-  }
-
-  /**
-   * Tests that a user cannot be updated with identical usernames.
-   */
-  @Test
-  public void testUpdateUser_IdenticalUsernames() {
-    //Create the users.
-    User user = createLocalUser();
-    createUser(user);
-    UserId userId2 = getOrCreateAltUserId();
-
-    //Create alternate user.
-    User user2 = createAltLocalUser();
-    user2.userId(userId2);
-    user2.username(user.username());
-
-    //Update the users.
     assertThat(accountManagementService.updateUser(user2))
         .isFalse();
-  }
 
-  /**
-   * Tests that a user cannot be updated if the username is too small.
-   */
-  @Test
-  public void testUpdateUser_UsernameTooSmall() {
-    //Create the users.
-    UserId userId = getOrCreateUserId();
-    User user = createLocalUser(userId, "1234", "myPassword");
-
-    assertThat(accountManagementService.updateUser(user))
-        .isFalse();
-  }
-
-  /**
-   * Tests that a user cannot be updated if the password is too small.
-   */
-  @Test
-  public void testUpdateUser_PasswordTooSmall() {
-    //Create the user.
-    UserId userId = getOrCreateUserId();
-    User user = createLocalUser(userId, "myUsername", "1234");
-
-    assertThat(accountManagementService.updateUser(user))
-        .isFalse();
-  }
-
-  /**
-   * Tests that a user cannot be updated if the username is too big.
-   */
-  @Test
-  public void testUpdateUser_UsernameTooBig() {
-    //Create the user.
-    UserId userId = getOrCreateUserId();
-    User user = createLocalUser(userId, "123456789012345678901234567890123456789012345678901", "myPassword");
-
-    assertThat(accountManagementService.updateUser(user))
-        .isFalse();
-  }
-
-  /**
-   * Tests that a user cannot be updated if the password is too big.
-   */
-  @Test
-  public void testUpdateUser_PasswordTooBig() {
-    //Create the user.
-    UserId userId = getOrCreateUserId();
-    User user = createLocalUser(userId, "myUsername", "12345678901234567890123456789012345678901234567890123456789012345");
-
-    assertThat(accountManagementService.updateUser(user))
-        .isFalse();
+    //Get the not updated user.
+    User user3 = accountManagementService.getUserById(userId);
+    assertThat(user3)
+        .isEqualToIgnoringGivenFields(user, "password");
   }
 
   /**
    * Tests that a user is deleted from the database by id.
    */
   @Test
-  public void testDeleteUser_ById() {
+  public void testDeleteUserById() {
     //Create and delete the user.
     UserId userId = getOrCreateUserId();
+    assertThat(userId.getEncodedValue())
+        .isNotNull();
+
+    //Get the created user
+    assertThat(accountManagementService.getUserById(userId))
+        .isNotNull();
+
+    //Delete the user
     assertThat(accountManagementService.deleteUserById(userId))
         .isTrue();
 
+    //Get the deleted user
     assertThat(accountManagementService.getUserById(userId))
         .isNull();
   }
 
   /**
-   * Tests that a user is deleted from the database by username.
+   * Tests that false is returned if the user could not be deleted by userId.
    */
   @Test
-  public void testDeleteUser_ByUsername() {
-    //Create and delete the user.
-    User user = createLocalUser();
-    UserId userId = createUser(user);
-
-    //Delete the user
-    assertThat(accountManagementService.deleteUserByUsername(user.username()))
-        .isTrue();
-
-    assertThat(accountManagementService.getUserById(userId))
-        .isNull();
-  }
-
-  /**
-   * Tests that a user cannot be deleted if id is null.
-   */
-  @Test
-  public void testDeleteUser_ById_NullId() {
+  public void testDeleteUserById_Fail() {
+    //Delete the user with an empty userId.
     assertThat(accountManagementService.deleteUserById(new UserId()))
         .isFalse();
   }
@@ -527,32 +218,35 @@ public class AccountManagementServiceTest extends ServicesBaseComponent {
    * Tests that a user is deleted from the database by username.
    */
   @Test
-  public void testDeleteUser_ByUsername_NullUsername() {
-    assertThat(accountManagementService.deleteUserByUsername(null))
-        .isFalse();
-  }
-
-  /**
-   * Tests that a user cannot be deleted if id is not there.
-   */
-  @Test
-  public void testDeleteUser_ById_NotInDB() {
-    UserId userId = createUserId();
-    accountManagementService.deleteUserById(userId);
-
-    assertThat(accountManagementService.deleteUserById(userId))
-        .isFalse();
-  }
-
-  /**
-   * Tests that a user is deleted from the database by username.
-   */
-  @Test
-  public void testDeleteUser_ByUsername_NotInDB() {
+  public void testDeleteUserByUsername() {
+    //Setup the user.
     User user = createLocalUser();
-    accountManagementService.deleteUserByUsername(user.username());
 
+    //Create the user.
+    UserId userId = createUser(user);
+    assertThat(userId.getEncodedValue())
+        .isNotNull();
+
+    //Get the user.
+    assertThat(accountManagementService.getUserById(userId))
+        .isNotNull();
+
+    //Delete the user
     assertThat(accountManagementService.deleteUserByUsername(user.username()))
+        .isTrue();
+
+    //Get the deleted user.
+    assertThat(accountManagementService.getUserById(userId))
+        .isNull();
+  }
+
+  /**
+   * Tests that false is returned if it could not delete the user by username.
+   */
+  @Test
+  public void testDeleteUserByUsername_Fail() {
+    //Delete the user
+    assertThat(accountManagementService.deleteUserByUsername(null))
         .isFalse();
   }
 }
