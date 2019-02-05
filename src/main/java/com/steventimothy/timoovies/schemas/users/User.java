@@ -1,7 +1,6 @@
 package com.steventimothy.timoovies.schemas.users;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.steventimothy.timoovies.schemas.ids.UserId;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -16,16 +15,16 @@ import lombok.experimental.Accessors;
 @Data
 public class User {
 
-  /**
-   * The id of the user.
-   */
-  private UserId userId;
-  /**
-   * The username of the user.
-   */
-  private String username;
-  /**
-   * The encrypted password of the user.
-   */
-  private String password;
+//  /**
+//   * The id of the user.
+//   */
+//  private UserId userId;
+//  /**
+//   * The username of the user.
+//   */
+//  private String username;
+//  /**
+//   * The encrypted password of the user.
+//   */
+//  private String password;
 }

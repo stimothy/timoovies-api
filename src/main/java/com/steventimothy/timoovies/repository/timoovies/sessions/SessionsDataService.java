@@ -15,5 +15,37 @@ import org.springframework.stereotype.Component;
 @Component
 public class SessionsDataService {
 
-  private SessionsDbService sessionsDbService;
+//  private SessionsDbService sessionsDbService;
+//
+//  public SessionId login(UserId userId) {
+//    SessionId sessionId = null;//new SessionId();
+//    String session = sessionsDbService.get(null);
+//    if (session != null) {
+//      //sessionId.rawId(UUID.fromString(session));
+//    }
+//
+//    if (sessionId.getEncodedValue() == null) {
+//      DataSession dataSession = new DataSession()
+//          .id(UUID.randomUUID().toString())
+//          .user_id(null)
+//          .expiration(calculateExpiration());
+//      dataSession.date_created(Instant.now());
+//      dataSession.last_modified(dataSession.date_created());
+//
+//      //sessionId.rawId(UUID.fromString(sessionsDbService.insert(dataSession)));
+//    }
+//    else {
+//      DataSession dataSession = new DataSession()
+//          .user_id(null)
+//          .expiration(calculateExpiration())
+//          .last_modified(Instant.now());
+//      sessionsDbService.update(dataSession);
+//    }
+//
+//    return sessionId;
+//  }
+//
+//  private Instant calculateExpiration() {
+//    return Instant.now().plus(3, ChronoUnit.HOURS);
+//  }
 }

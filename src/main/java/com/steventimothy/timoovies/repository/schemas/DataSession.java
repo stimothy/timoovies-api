@@ -6,33 +6,33 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * <h1>The DataUser Class</h1>
- * <p>This class is the data object for the users table.</p>
+ * <h1>The DataSession Class</h1>
+ * <p>This class is the data object for the sessions table.</p>
  */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @NoArgsConstructor
 @Accessors(fluent = true)
 @Data
-public class DataUser {
+public class DataSession {
 
 //  /**
-//   * The id of the user.
+//   * The sessionId.
 //   */
-//  private Long id;
+//  private String id;
 //  /**
-//   * The username of the user.
+//   * The userId.
 //   */
-//  private String username;
+//  private Long user_id;
 //  /**
-//   * The encrypted password of the user.
+//   * The time the session expires.
 //   */
-//  private String enc_password;
+//  private Instant expiration;
 //  /**
-//   * The date the user was created.
+//   * The time the session was created.
 //   */
 //  private Instant date_created;
 //  /**
-//   * The date the last time this user was modified.
+//   * The time the session was last modified.
 //   */
 //  private Instant last_modified;
 }

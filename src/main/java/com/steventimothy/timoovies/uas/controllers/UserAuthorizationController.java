@@ -1,15 +1,8 @@
 package com.steventimothy.timoovies.uas.controllers;
 
-import com.steventimothy.timoovies.schemas.ids.SessionId;
-import com.steventimothy.timoovies.schemas.users.User;
-import com.steventimothy.timoovies.uas.services.UserAuthorizationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,29 +16,39 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserAuthorizationController {
 
-  /**
-   * The service that holds the logic for the uas endpoints.
-   */
-  private UserAuthorizationService userAuthorizationService;
-
-  /**
-   * Logs in a user.
-   * @param user the user information to log verify before logging in.
-   * @return The sessionId if the user was able to log in, bad request if not.
-   */
-  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity login(@RequestBody User user) {
-//    log.info("POST: /uas - Body: user={}", user);
+//  /**
+//   * The service that holds the logic for the uas endpoints.
+//   */
+//  private UserAuthorizationService userAuthorizationService;
+//
+//  /**
+//   * Gets a general sessionId for a client to use.
+//   * @return A general sessionId.
+//   */
+//  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+//  public ResponseEntity getGeneralSessionId() {
+//    SessionId sessionId = new GeneralSessionId(UUID.randomUUID());
+//
+//    log.info("[200] GET: /uas - Response: body={}", sessionId.getEncodedValue());
+//    return ResponseEntity.ok(sessionId.getEncodedValue());
+//  }
+//
+//  /**
+//   * Logs in a user.
+//   * @param user the user information to log verify before logging in.
+//   * @return The sessionId if the user was able to log in, bad request if not.
+//   */
+//  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//  public ResponseEntity login(@RequestBody User user) {
 //    SessionId sessionId = userAuthorizationService.login(user);
 //
 //    if (sessionId.getEncodedValue() != null) {
-//      log.info("POST: /uas - Response: id={}", sessionId);
+//      log.info("[200] POST: /uas - Body: user={} - Response: id={}", user, sessionId);
 //      return ResponseEntity.ok(sessionId);
 //    }
 //    else {
-//      log.warn("POST: /uas - Could not login the user: {}", user);
+//      log.warn("[400] POST: /uas - Could not login the user: {}", user);
 //      return ResponseEntity.badRequest().build();
 //    }
-    return ResponseEntity.ok().build();
-  }
+//  }
 }
